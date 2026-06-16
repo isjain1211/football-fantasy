@@ -1,26 +1,19 @@
 """
 WC 2026 Fantasy Pool — Streamlit Dashboard
 ==========================================
-Deploy to Streamlit Cloud:
-  1. Push this repo to GitHub
-  2. Go to share.streamlit.io
-  3. Connect your GitHub repo
-  4. Set FOOTBALL_API_TOKEN in Streamlit secrets
-  5. Done — anyone with the URL sees live scores
-
-Local dev:
-  pip install streamlit requests
-  streamlit run app.py
+Deploy: push to GitHub → share.streamlit.io → connect repo → add secret
+Local:  streamlit run app.py
+Secret: FOOTBALL_API_TOKEN = "your_token"
 """
 
 import streamlit as st
 import requests
-import json
-import time
-from datetime import datetime, timezone
+import pandas as pd
+from datetime import datetime, timezone, date as dt_date
+from collections import defaultdict
 
 # ─────────────────────────────────────────────────────────────
-# PAGE CONFIG
+# PAGE CONFIG — must be first Streamlit call
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="WC 2026 Fantasy Pool",
@@ -30,119 +23,311 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────────────────────
-# CUSTOM CSS — matches the original green/cream aesthetic
+# CSS — pixel-faithful to the original HTML design
 # ─────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-  /* Main background */
-  .stApp { background-color: #FEF8F3; }
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
 
-  /* Hide streamlit branding */
-  #MainMenu, footer, header { visibility: hidden; }
+:root {
+  --ag:    #007B63;
+  --ag-h:  #006652;
+  --ag5:   #E6F2F0;
+  --ag10:  #CCE5E1;
+  --wh:    #FFFFFF;
+  --le:    #FEF8F3;
+  --ecru:  #CAC2BA;
+  --e100:  #E0DBD4;
+  --e300:  #B8AEA5;
+  --e600:  #6B635C;
+  --grey:  #55585A;
+  --sb:    #333333;
+  --mint:  #BAFFC5;
+  --saxe:  #395878;
+  --ice:   #E3ECF6;
+  --coral: #F67A6D;
+  --c100:  #FFE9DE;
+  --gold:  #B8960C;
+}
 
-  /* Metric cards */
-  [data-testid="metric-container"] {
-    background: white;
-    border: 1px solid #E0DBD4;
-    border-radius: 6px;
-    padding: 12px 16px;
-  }
-  [data-testid="metric-container"] label {
-    color: #55585A !important;
-    font-size: 11px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  [data-testid="metric-container"] [data-testid="stMetricValue"] {
-    color: #007B63 !important;
-    font-size: 28px !important;
-    font-weight: 700 !important;
-  }
+/* ── Base ── */
+.stApp { background: var(--le) !important; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
+.stApp > header { display: none !important; }
+#MainMenu, footer { display: none !important; }
+[data-testid="stDecoration"] { display: none !important; }
 
-  /* Dataframe styling */
-  [data-testid="stDataFrame"] { border: 1px solid #E0DBD4; border-radius: 6px; }
+/* ── Remove default Streamlit padding ── */
+.block-container { padding-top: 0 !important; padding-bottom: 0 !important; max-width: 100% !important; }
+section[data-testid="stSidebar"] { display: none; }
 
-  /* Tab styling */
-  .stTabs [data-baseweb="tab-list"] {
-    background: white;
-    border-bottom: 2px solid #007B63;
-    gap: 0;
-  }
-  .stTabs [data-baseweb="tab"] {
-    background: transparent;
-    color: #55585A;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-bottom: 2px solid transparent;
-  }
-  .stTabs [aria-selected="true"] {
-    color: #007B63 !important;
-    border-bottom: 2px solid #007B63 !important;
-    background: transparent !important;
-  }
+/* ── Header bar ── */
+.wc-header {
+  background: var(--ag);
+  padding: 0 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #005e4c;
+  margin-bottom: 0;
+}
+.wc-header-logo {
+  font-family: "EB Garamond", "Times New Roman", serif;
+  font-size: 20px;
+  color: white;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.wc-header-right {
+  font-size: 10px;
+  color: rgba(255,255,255,0.65);
+  text-align: right;
+  line-height: 1.5;
+}
+.wc-header-right strong { color: rgba(255,255,255,0.9); }
 
-  /* Header banner */
-  .header-banner {
-    background: #007B63;
-    color: white;
-    padding: 14px 20px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .header-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .header-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+/* ── Status bar ── */
+.wc-status {
+  background: var(--ag5);
+  border-bottom: 1px solid var(--ag10);
+  padding: 4px 20px;
+  font-size: 10px;
+  color: var(--grey);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wc-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ag); display: inline-block;
+  box-shadow: 0 0 5px var(--ag);
+}
+.wc-status-note { color: var(--ag); font-weight: 600; }
 
-  /* Podium cards */
-  .podium-gold {
-    background: #007B63; color: white;
-    padding: 20px; border-radius: 8px; text-align: center;
-  }
-  .podium-silver, .podium-bronze {
-    background: white; border: 1px solid #E0DBD4;
-    padding: 16px; border-radius: 8px; text-align: center;
-  }
-  .podium-score {
-    font-size: 36px; font-weight: 800; line-height: 1;
-  }
-  .podium-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-  .podium-picks { font-size: 10px; opacity: 0.7; margin-top: 4px; }
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+  background: white !important;
+  border-bottom: 2px solid var(--ag) !important;
+  padding: 0 12px;
+  gap: 0 !important;
+}
+.stTabs [data-baseweb="tab"] {
+  background: transparent !important;
+  color: var(--grey) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 8px 14px !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+}
+.stTabs [data-baseweb="tab"]:hover { color: var(--ag) !important; }
+.stTabs [aria-selected="true"] {
+  color: var(--ag) !important;
+  border-bottom: 2px solid var(--ag) !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+}
+.stTabs [data-baseweb="tab-panel"] {
+  padding: 0 !important;
+  background: var(--le) !important;
+}
 
-  /* Nation card */
-  .nation-card {
-    background: white; border: 1px solid #E0DBD4;
-    border-radius: 6px; padding: 10px 14px;
-    margin-bottom: 6px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .nation-card.myteam { border-left: 3px solid #007B63; background: #E6F2F0; }
+/* ── Podium ── */
+.podium-wrap {
+  display: flex; gap: 10px; margin: 20px 0 16px; align-items: flex-end;
+}
+.pod {
+  flex: 1; border-radius: 3px; padding: 16px 12px;
+  text-align: center; border: 1px solid var(--e100);
+  background: white; cursor: pointer;
+  transition: box-shadow .15s;
+}
+.pod:hover { box-shadow: 0 4px 16px rgba(0,123,99,.12); }
+.pod-gold {
+  background: var(--ag); border-color: var(--ag);
+  padding-top: 22px; order: 2;
+}
+.pod-silver { order: 1; }
+.pod-bronze { order: 3; }
+.pod-medal { font-size: 22px; margin-bottom: 6px; }
+.pod-name {
+  font-size: 11px; font-weight: 700;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 4px; color: var(--sb);
+}
+.pod-gold .pod-name { color: white; }
+.pod-score {
+  font-family: "EB Garamond", serif;
+  font-size: 36px; line-height: 1;
+  color: var(--ag); font-weight: 500;
+}
+.pod-gold .pod-score { color: var(--mint); }
+.pod-pts { font-size: 10px; color: var(--grey); margin-top: 2px; }
+.pod-gold .pod-pts { color: rgba(255,255,255,.6); }
+.pod-picks { font-size: 9px; color: var(--e300); margin-top: 5px; line-height: 1.5; }
+.pod-gold .pod-picks { color: rgba(255,255,255,.45); }
 
-  /* Status pill */
-  .live-pill {
-    background: #FFE9DE; color: #b85a50;
-    padding: 3px 10px; border-radius: 20px;
-    font-size: 11px; font-weight: 700;
-  }
-  .ok-pill {
-    background: #E6F2F0; color: #007B63;
-    padding: 3px 10px; border-radius: 20px;
-    font-size: 11px; font-weight: 700;
-  }
+/* ── Search box ── */
+.stTextInput input {
+  background: white !important;
+  border: 1px solid var(--e100) !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+  color: var(--sb) !important;
+}
+.stTextInput input:focus { border-color: var(--ag) !important; box-shadow: none !important; }
+.stTextInput label { font-size: 11px !important; color: var(--grey) !important; }
 
-  /* Fixture card */
-  .fixture-card {
-    background: white; border: 1px solid #E0DBD4;
-    border-radius: 6px; padding: 10px 14px; margin-bottom: 6px;
-  }
-  .fixture-card.played { border-left: 3px solid #007B63; }
-  .fixture-card.live   { border-left: 3px solid #F67A6D; background: #fff5f5; }
-  .fixture-card.upcoming { border-left: 3px solid #E0DBD4; }
+/* ── Leaderboard table ── */
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table thead th {
+  font-size: 11px; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--sb); padding: 8px; border-bottom: 2px solid var(--ag);
+  font-weight: 700; background: white; text-align: left;
+  position: sticky; top: 0; z-index: 1;
+}
+.lb-table thead th.r { text-align: right; }
+.lb-row {
+  border-bottom: 1px solid rgba(224,219,212,.6);
+  transition: background .1s;
+}
+.lb-row:hover { background: var(--ag5); }
+.lb-row.self { border-left: 3px solid var(--ag); background: var(--ag5); }
+.lb-row.ai   { border-left: 3px solid var(--saxe); background: var(--ice); font-style: italic; }
+.lb-row td   { padding: 7px 8px; font-size: 12px; vertical-align: middle; }
+.rank  { font-size: 11px; color: var(--e300); font-weight: 500; width: 26px; }
+.pname { font-weight: 600; color: var(--sb); }
+.pname.ai { color: var(--saxe); }
+.picks { font-size: 10px; color: var(--e300); line-height: 1.5; }
+.stat  { font-size: 11px; color: var(--grey); text-align: right; }
+.score { font-size: 14px; font-weight: 700; text-align: right; color: var(--ag); }
+.score.neg  { color: var(--coral); }
+.score.zero { color: var(--e300); }
+.yc  { color: #9a7d0a; font-weight: 700; }
+.rc  { color: #c0392b; font-weight: 700; }
+.ai-hdr td {
+  padding: 5px 8px; font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--saxe); font-weight: 700;
+  background: var(--ice); border-bottom: 1px solid #c5d8ee;
+}
+.human-hdr td {
+  padding: 5px 8px; font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--grey); font-weight: 700;
+  background: var(--le); border-bottom: 2px solid var(--ag);
+}
+
+/* ── Group cards ── */
+.group-card {
+  background: white; border: 1px solid var(--e100);
+  border-radius: 3px; overflow: hidden; margin-bottom: 14px;
+}
+.group-hdr {
+  background: var(--ag); padding: 8px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.group-hdr span { font-size: 11px; font-weight: 700; color: white; letter-spacing: 1px; text-transform: uppercase; }
+.group-hdr small { font-size: 10px; color: rgba(255,255,255,.6); }
+.grp-table { width: 100%; border-collapse: collapse; }
+.grp-table thead th {
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--grey); padding: 6px 10px; border-bottom: 1px solid var(--e100);
+  font-weight: 600; text-align: left;
+}
+.grp-table thead th.r { text-align: right; }
+.grp-table tbody tr { border-bottom: 1px solid rgba(224,219,212,.4); transition: background .1s; }
+.grp-table tbody tr:last-child { border-bottom: none; }
+.grp-table tbody tr:hover { background: var(--ag5); }
+.grp-table tbody td { padding: 7px 10px; font-size: 12px; vertical-align: middle; color: #333333; }
+.grp-table tbody tr.myteam { background: var(--ag5); }
+.fantasy-score { font-weight: 700; color: var(--ag); text-align: right; }
+.fantasy-neg   { color: var(--coral) !important; font-weight: 700; text-align: right; }
+.fantasy-zero  { color: var(--e300) !important; font-weight: 700; text-align: right; }
+.stat-mini     { font-size: 10px; color: var(--grey); text-align: right; }
+
+/* ── Fixture cards ── */
+.fx-day-label {
+  font-size: 10px; color: var(--grey); font-weight: 700;
+  letter-spacing: .5px; text-transform: uppercase;
+  margin: 14px 0 6px; padding-bottom: 4px;
+  border-bottom: 1px solid var(--e100);
+}
+.fx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 8px; margin-bottom: 4px; }
+.fx-card {
+  background: white; border: 1px solid var(--e100);
+  border-radius: 3px; padding: 10px 14px;
+}
+.fx-card.played  { border-left: 3px solid var(--ag); }
+.fx-card.live    { border-left: 3px solid var(--coral); background: #fff8f7; }
+.fx-card.today   { border-left: 3px solid var(--gold); background: #fffbf0; }
+.fx-card.upcoming{ border-left: 3px solid var(--e100); }
+.fx-top { display: flex; justify-content: space-between; font-size: 9px; color: var(--grey); margin-bottom: 6px; }
+.fx-grp { font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.fx-teams { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.fx-team { font-size: 12px; font-weight: 600; color: var(--sb); flex: 1; }
+.fx-team.away { text-align: right; }
+.fx-score {
+  font-family: "EB Garamond", serif;
+  font-size: 20px; font-weight: 500; color: var(--ag);
+  text-align: center; min-width: 50px; line-height: 1;
+}
+.fx-score.tbd { font-size: 12px; color: var(--e300); font-family: inherit; font-weight: 400; }
+.fx-score.live-score { color: var(--coral); }
+.fx-bottom { display: flex; justify-content: space-between; margin-top: 5px; font-size: 9px; }
+.fx-venue { color: var(--e300); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+.fx-status { color: var(--grey); font-weight: 600; }
+.fx-notable { font-size: 9px; color: var(--coral); margin-top: 3px; font-weight: 500; }
+
+/* ── Filter buttons ── */
+.stRadio [data-testid="stRadio"] label { font-size: 12px !important; }
+.stSelectbox select { font-size: 12px !important; }
+[data-testid="stHorizontalBlock"] { gap: 6px !important; }
+
+/* ── Breakdown expander ── */
+.breakdown-item {
+  display: flex; justify-content: space-between;
+  padding: 5px 10px; font-size: 12px;
+  border-bottom: 1px solid rgba(224,219,212,.5);
+  color: var(--grey);
+}
+.breakdown-item.pos span:last-child { color: var(--ag); font-weight: 700; }
+.breakdown-item.neg span:last-child { color: var(--coral); font-weight: 700; }
+.breakdown-item.zero span:last-child { color: var(--e300); font-weight: 700; }
+
+/* ── Scoring rules ── */
+.scoring-section {
+  background: white; border: 1px solid var(--e100);
+  border-radius: 3px; padding: 14px 16px; margin-bottom: 10px;
+}
+.scoring-section h4 {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--grey); font-weight: 700; padding-bottom: 8px;
+  border-bottom: 2px solid var(--ag); margin-bottom: 10px;
+}
+.scoring-row {
+  display: flex; justify-content: space-between;
+  padding: 4px 0; border-bottom: 1px solid rgba(224,219,212,.5);
+  font-size: 11px; color: var(--grey);
+}
+.scoring-row:last-child { border-bottom: none; }
+.scoring-row .v { font-weight: 700; }
+.vpos { color: var(--ag) !important; }
+.vneg { color: var(--coral) !important; }
+.vbon { color: var(--saxe) !important; }
+.eg-box {
+  background: var(--ag5); border: 1px solid var(--ag10);
+  border-left: 3px solid var(--ag); border-radius: 3px;
+  padding: 10px 12px; font-size: 11px; color: var(--grey); line-height: 1.8;
+}
+.eg-box strong { color: var(--ag); }
+
+/* ── Streamlit overrides ── */
+[data-testid="stMetric"] { display: none; }
+.stSpinner > div { border-top-color: var(--ag) !important; }
+div[data-testid="stExpander"] {
+  border: 1px solid var(--e100) !important;
+  border-radius: 3px !important;
+  background: white !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -151,7 +336,7 @@ st.markdown("""
 # ─────────────────────────────────────────────────────────────
 PLAYERS = [
     {"id":1,  "name":"Vivek Dasani",      "picks":["Spain","Germany","Uruguay","Ecuador","Sweden","Norway","Ghana","Jordan"]},
-    {"id":2,  "name":"Abhinna Mehta",     "picks":["Argentina","Germany","USA","South Korea","Qatar","Norway","Saudi Arabia","New Zealand"], "self":True},
+    {"id":2,  "name":"Abhinna Mehta",     "picks":["Argentina","Germany","USA","South Korea","Qatar","Norway","Saudi Arabia","New Zealand"],"self":True},
     {"id":3,  "name":"Alice Darry",       "picks":["France","Germany","USA","Austria","Canada","Norway","Ghana","New Zealand"]},
     {"id":4,  "name":"Hallie Farber",     "picks":["England","Germany","USA","Ecuador","Sweden","Scotland","Panama","New Zealand"]},
     {"id":5,  "name":"Olha Svidrun",      "picks":["France","Germany","Switzerland","Australia","Sweden","Norway","South Africa","New Zealand"]},
@@ -214,9 +399,9 @@ PLAYERS = [
     {"id":62, "name":"Kai Aschick",       "picks":["France","Morocco","Japan","Austria","Sweden","Czechia","Ghana","New Zealand"]},
     {"id":63, "name":"Azmat Medov",       "picks":["Spain","Germany","Mexico","Iran","Algeria","Türkiye","South Africa","Jordan"]},
     {"id":64, "name":"Moritz Duembgen",   "picks":["Spain","Germany","Switzerland","Austria","Sweden","Norway","Ghana","New Zealand"]},
-    {"id":65, "name":"🤖 ChatGPT",        "picks":["France","Germany","Uruguay","Austria","Sweden","Norway","Paraguay","Uzbekistan"], "ai":True},
-    {"id":66, "name":"🤖 Google Gemini",  "picks":["France","Germany","Uruguay","Ecuador","Sweden","Norway","Paraguay","New Zealand"], "ai":True},
-    {"id":67, "name":"🤖 Claude",         "picks":["Spain","Germany","USA","Ecuador","Canada","Norway","Paraguay","Uzbekistan"], "ai":True},
+    {"id":65, "name":"🤖 ChatGPT",        "picks":["France","Germany","Uruguay","Austria","Sweden","Norway","Paraguay","Uzbekistan"],"ai":True},
+    {"id":66, "name":"🤖 Google Gemini",  "picks":["France","Germany","Uruguay","Ecuador","Sweden","Norway","Paraguay","New Zealand"],"ai":True},
+    {"id":67, "name":"🤖 Claude",         "picks":["Spain","Germany","USA","Ecuador","Canada","Norway","Paraguay","Uzbekistan"],"ai":True},
 ]
 
 GROUPS = {
@@ -233,7 +418,6 @@ GROUPS = {
     "K":["Portugal","DR Congo","Uzbekistan","Colombia"],
     "L":["England","Croatia","Ghana","Panama"],
 }
-
 FLAGS = {
     "Mexico":"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷","Czechia":"🇨🇿",
     "Canada":"🇨🇦","Bosnia & Herz.":"🇧🇦","Qatar":"🇶🇦","Switzerland":"🇨🇭",
@@ -248,7 +432,6 @@ FLAGS = {
     "Portugal":"🇵🇹","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
     "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
 }
-
 NAME_MAP = {
     "United States":"USA","Korea Republic":"South Korea",
     "Côte d'Ivoire":"Ivory Coast","Cote d'Ivoire":"Ivory Coast",
@@ -257,41 +440,46 @@ NAME_MAP = {
     "Czech Republic":"Czechia","Turkey":"Türkiye",
     "Congo DR":"DR Congo","Democratic Republic of Congo":"DR Congo",
 }
-
 MY_TEAMS = {"Argentina","Germany","USA","South Korea","Qatar","Norway","Saudi Arabia","New Zealand"}
 
-def norm(name): return NAME_MAP.get(name, name)
-def flag(name): return FLAGS.get(norm(name), "🏳️")
-def fmt(n): return "—" if n is None else (str(int(n)) if n == int(n) else f"{n:.1f}")
+def norm(n): return NAME_MAP.get(n, n)
+def flag(n): return FLAGS.get(norm(n), "🏳️")
+def fmt(n):
+    if n is None: return "—"
+    return str(int(n)) if n == int(n) else f"{n:.1f}"
+def score_cls(s):
+    if s > 0: return "score"
+    if s < 0: return "score neg"
+    return "score zero"
+def get_group(t):
+    for g, teams in GROUPS.items():
+        if t in teams: return g
+    return "?"
+def today_str():
+    d = datetime.now()
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    return f"{d.day} {months[d.month-1]}"
 
 # ─────────────────────────────────────────────────────────────
-# DATA FETCHING — cached for 5 minutes so every visitor
-# gets fresh data without hammering the API
+# DATA FETCH — cached 5 min
 # ─────────────────────────────────────────────────────────────
-@st.cache_data(ttl=300)  # refresh every 5 minutes
-def fetch_all_data():
-    """Fetch all WC 2026 data from football-data.org and compute fantasy scores."""
-
-    # Get API token from Streamlit secrets (set in Streamlit Cloud dashboard)
-    # For local dev: create .streamlit/secrets.toml with:
-    #   FOOTBALL_API_TOKEN = "your_token_here"
+@st.cache_data(ttl=300)
+def fetch_data():
     try:
         token = st.secrets["FOOTBALL_API_TOKEN"]
     except Exception:
-        token = "715a8137efc14ac0b72173f9572bc5a9"  # fallback for local dev
-
-    headers = {"X-Auth-Token": token}
-    base    = "https://api.football-data.org/v4"
+        token = "715a8137efc14ac0b72173f9572bc5a9"
 
     try:
-        r = requests.get(f"{base}/competitions/WC/matches", headers=headers, timeout=15)
+        r = requests.get(
+            "https://api.football-data.org/v4/competitions/WC/matches",
+            headers={"X-Auth-Token": token}, timeout=15
+        )
         r.raise_for_status()
         matches = r.json().get("matches", [])
     except Exception as e:
-        st.error(f"API fetch failed: {e}")
-        return None
+        return None, str(e)
 
-    # ── collect all picked teams ──
     all_picked = set(t for p in PLAYERS for t in p["picks"])
     scores = {t: {"score":0.0,"goals":0,"cs":0,"gd":0,"wins":0,"draws":0,"losses":0,"yc":0,"rc":0}
               for t in all_picked}
@@ -307,7 +495,6 @@ def fetch_all_data():
         h_in = home in scores
         a_in = away in scores
         if not h_in and not a_in: continue
-
         if h_in: scores[home]["goals"] += hg
         if a_in: scores[away]["goals"] += ag
         if h_in and ag == 0: scores[home]["cs"] += 1
@@ -323,388 +510,373 @@ def fetch_all_data():
         else:
             if h_in: scores[home]["draws"] += 1
             if a_in: scores[away]["draws"] += 1
-
         for b in m.get("bookings", []):
-            team = norm((b.get("team") or {}).get("name",""))
-            if team not in scores: continue
-            if b.get("card") == "YELLOW_CARD":       scores[team]["yc"] += 1
-            elif b.get("card") in ("RED_CARD","YELLOW_RED_CARD"): scores[team]["rc"] += 1
+            t = norm((b.get("team") or {}).get("name", ""))
+            if t not in scores: continue
+            c = b.get("card", "")
+            if c == "YELLOW_CARD": scores[t]["yc"] += 1
+            elif c in ("RED_CARD","YELLOW_RED_CARD"): scores[t]["rc"] += 1
 
-    # ── fantasy points ──
     for t, s in scores.items():
         pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
         pts += max(0, s["gd"]) * 0.5
         pts -= s["yc"]*0.5 + s["rc"]*2.0
         s["score"] = round(pts, 1)
 
-    # ── player scores ──
     player_scores = []
     for p in PLAYERS:
-        total = 0.0
-        breakdown = {}
+        total = 0.0; bd = {}
         for i, pick in enumerate(p["picks"]):
             s = scores.get(pick, {}).get("score", 0.0)
             total += s
-            breakdown[f"P{i+1} · {pick}"] = s
-        player_scores.append({**p, "total": round(total,1), "breakdown": breakdown})
+            bd[f"P{i+1} · {pick}"] = s
+        player_scores.append({**p, "total": round(total,1), "breakdown": bd})
 
-    # ── fixtures ──
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    fixture_list = []
+    fx_list = []
     for m in matches:
-        status  = m["status"]
-        played  = status == "FINISHED"
-        is_live = status in ("IN_PLAY","PAUSED")
+        st_  = m["status"]
+        played  = st_ == "FINISHED"
+        is_live = st_ in ("IN_PLAY","PAUSED")
         hg = m["score"]["fullTime"]["home"]
         ag = m["score"]["fullTime"]["away"]
-        date_str = m.get("utcDate","")[:10]
+        ds = m.get("utcDate","")[:10]
         try:
-            from datetime import date
-            d = date.fromisoformat(date_str)
-            date_label = f"{d.day} {months[d.month-1]}"
-        except: date_label = date_str
+            d = dt_date.fromisoformat(ds)
+            dl = f"{d.day} {months[d.month-1]}"
+        except: dl = ds
         grp = (m.get("group") or "?").replace("GROUP_","")
-        fixture_list.append({
-            "date": date_label, "group": grp,
-            "home": norm(m["homeTeam"]["name"]),
-            "away": norm(m["awayTeam"]["name"]),
-            "homeScore": hg, "awayScore": ag,
-            "venue": m.get("venue","") or "",
-            "played": played, "live": is_live,
+        fx_list.append({
+            "date":dl,"group":grp,
+            "home":norm(m["homeTeam"]["name"]),
+            "away":norm(m["awayTeam"]["name"]),
+            "homeScore":hg,"awayScore":ag,
+            "venue":m.get("venue","") or "",
+            "played":played,"live":is_live,
         })
 
+    now = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     return {
-        "nation_scores":  scores,
-        "player_scores":  player_scores,
-        "fixtures":       fixture_list,
-        "matches_played": len(finished),
-        "matches_live":   len(live),
-        "matches_total":  len(matches),
-        "updated_at":     datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC"),
-    }
+        "ns": scores, "ps": player_scores, "fx": fx_list,
+        "played": len(finished), "live_count": len(live),
+        "total": len(matches), "updated": now,
+    }, None
 
 # ─────────────────────────────────────────────────────────────
-# HEADER
+# HELPERS
 # ─────────────────────────────────────────────────────────────
-st.markdown("""
-<div class="header-banner">
-  <div>
-    <div class="header-title">⚽ The Unofficial World Cup Pool</div>
-    <div class="header-sub">FIFA World Cup 2026 · Fantasy Leaderboard</div>
+def pick_stats(p, ns):
+    g=mp=w=d=l=cs=gd=yc=rc=0
+    for t in p["picks"]:
+        s = ns.get(t, {})
+        g  += s.get("goals",0)
+        mp += s.get("wins",0)+s.get("draws",0)+s.get("losses",0)
+        w  += s.get("wins",0);  d  += s.get("draws",0);  l  += s.get("losses",0)
+        cs += s.get("cs",0);    gd += s.get("gd",0)
+        yc += s.get("yc",0);    rc += s.get("rc",0)
+    return g,mp,w,d,l,cs,gd,yc,rc
+
+def lb_row_html(rank, p, ns, ai=False):
+    g,mp,w,d,l,cs,gd,yc,rc = pick_stats(p, ns)
+    sc = p["total"]
+    row_cls = "ai" if ai else ("self" if p.get("self") else "")
+    rank_str = "—" if ai else str(rank)
+    name_cls = "pname ai" if ai else "pname"
+    star = " ★" if p.get("self") else ""
+    yc_html = f'<span class="yc">{yc}🟨</span>' if yc else ""
+    rc_html = f'<span class="rc">{rc}🟥</span>' if rc else ""
+    cards = (yc_html + " " + rc_html).strip() or "—"
+    picks_str = " · ".join(p["picks"])
+    return f"""<tr class="lb-row {row_cls}">
+      <td class="rank">{rank_str}</td>
+      <td class="{name_cls}">{p['name']}{star}</td>
+      <td class="picks">{picks_str}</td>
+      <td class="stat">{g or '—'}</td>
+      <td class="stat">{mp or '—'}</td>
+      <td class="stat">{w or '—'}</td>
+      <td class="stat">{d or '—'}</td>
+      <td class="stat">{l or '—'}</td>
+      <td class="stat">{cs or '—'}</td>
+      <td class="stat">{gd if gd else '—'}</td>
+      <td class="stat">{cards}</td>
+      <td class="{score_cls(sc)}">{fmt(sc)}</td>
+    </tr>"""
+
+# ─────────────────────────────────────────────────────────────
+# LOAD
+# ─────────────────────────────────────────────────────────────
+DATA, err = fetch_data()
+
+# ── Header ──
+updated = DATA["updated"] if DATA else "—"
+status_txt = f"{DATA['played']}/{DATA['total']} matches completed" if DATA else "Error loading data"
+live_txt = f" · 🔴 {DATA['live_count']} LIVE" if DATA and DATA['live_count'] else ""
+
+st.markdown(f"""
+<div class="wc-header">
+  <div class="wc-header-logo">⚽ The Unofficial World Cup Pool</div>
+  <div class="wc-header-right">
+    <strong>{updated}</strong><br>Auto-refreshes every 5 min
   </div>
+</div>
+<div class="wc-status">
+  <span class="wc-dot"></span>
+  <span>{status_txt}{live_txt}</span>
+  <span class="wc-status-note">Data from football-data.org</span>
 </div>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# LOAD DATA
-# ─────────────────────────────────────────────────────────────
-with st.spinner("Loading live scores…"):
-    DATA = fetch_all_data()
-
-if DATA is None:
-    st.error("Could not load match data. Check your API token in Streamlit secrets.")
+if err:
+    st.error(f"⚠️ Could not load data: {err}")
     st.stop()
 
-ns = DATA["nation_scores"]
-ps = DATA["player_scores"]
-fx = DATA["fixtures"]
-
+ns = DATA["ns"]
+ps = DATA["ps"]
+fx = DATA["fx"]
 humans = sorted([p for p in ps if not p.get("ai")], key=lambda x: x["total"], reverse=True)
-ais    = sorted([p for p in ps if p.get("ai")],    key=lambda x: x["total"], reverse=True)
-
-# ─────────────────────────────────────────────────────────────
-# STATUS ROW
-# ─────────────────────────────────────────────────────────────
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Matches Played",  f"{DATA['matches_played']} / {DATA['matches_total']}")
-c2.metric("Live Now",        DATA["matches_live"], delta="🔴 LIVE" if DATA["matches_live"] else None)
-c3.metric("Players",         len(humans))
-c4.metric("Last Updated",    DATA["updated_at"].split(" ")[:-1][-1] + " UTC")
-
-st.caption(f"🕐 Data refreshes automatically every 5 minutes · Last fetch: {DATA['updated_at']}")
-
-if DATA["matches_live"]:
-    st.warning(f"🔴 **{DATA['matches_live']} match(es) currently LIVE** — scores updating every 5 minutes")
-
-st.divider()
+ais    = sorted([p for p in ps if p.get("ai")],     key=lambda x: x["total"], reverse=True)
 
 # ─────────────────────────────────────────────────────────────
 # TABS
 # ─────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4 = st.tabs([
-    "🏅 Leaderboard", "🌍 Nation Scores", "📅 Fixtures", "ℹ️ Scoring Rules"
+    "🏅  Leaderboard", "🌍  Nation Scores", "📅  Fixtures", "ℹ️  Scoring Rules"
 ])
 
-# ══════════════════════════════════════════ TAB 1: LEADERBOARD
+# ══════════════════════════════════════════════ TAB 1
 with tab1:
+    st.markdown('<div style="padding:0 20px">', unsafe_allow_html=True)
 
     # ── Podium ──
     if len(humans) >= 3:
-        col_silver, col_gold, col_bronze = st.columns([1, 1.2, 1])
-        with col_silver:
-            p = humans[1]
-            picks_str = " · ".join(p["picks"])
-            st.markdown(f"""
-            <div class="podium-silver">
-              <div style="font-size:24px">🥈</div>
-              <div class="podium-name">{p['name']}</div>
-              <div class="podium-score" style="color:#007B63">{fmt(p['total'])}</div>
-              <div style="font-size:10px;color:#55585A">pts</div>
-              <div class="podium-picks">{picks_str}</div>
-            </div>""", unsafe_allow_html=True)
-        with col_gold:
-            p = humans[0]
-            picks_str = " · ".join(p["picks"])
-            st.markdown(f"""
-            <div class="podium-gold">
-              <div style="font-size:28px">🥇</div>
-              <div class="podium-name">{p['name']}</div>
-              <div class="podium-score" style="color:#BAFFC5">{fmt(p['total'])}</div>
-              <div style="font-size:10px;opacity:0.7">pts</div>
-              <div class="podium-picks">{picks_str}</div>
-            </div>""", unsafe_allow_html=True)
-        with col_bronze:
-            p = humans[2]
-            picks_str = " · ".join(p["picks"])
-            st.markdown(f"""
-            <div class="podium-bronze">
-              <div style="font-size:24px">🥉</div>
-              <div class="podium-name">{p['name']}</div>
-              <div class="podium-score" style="color:#9E6B42">{fmt(p['total'])}</div>
-              <div style="font-size:10px;color:#55585A">pts</div>
-              <div class="podium-picks">{picks_str}</div>
-            </div>""", unsafe_allow_html=True)
-
-    st.markdown("---")
+        p1,p2,p3 = humans[0], humans[1], humans[2]
+        def pod_picks(p): return " · ".join(p["picks"])
+        st.markdown(f"""
+        <div class="podium-wrap">
+          <div class="pod pod-silver">
+            <div class="pod-medal">🥈</div>
+            <div class="pod-name">{p2['name']}</div>
+            <div class="pod-score">{fmt(p2['total'])}</div>
+            <div class="pod-pts">pts</div>
+            <div class="pod-picks">{pod_picks(p2)}</div>
+          </div>
+          <div class="pod pod-gold">
+            <div class="pod-medal">🥇</div>
+            <div class="pod-name">{p1['name']}</div>
+            <div class="pod-score">{fmt(p1['total'])}</div>
+            <div class="pod-pts">pts</div>
+            <div class="pod-picks">{pod_picks(p1)}</div>
+          </div>
+          <div class="pod pod-bronze">
+            <div class="pod-medal">🥉</div>
+            <div class="pod-name">{p3['name']}</div>
+            <div class="pod-score">{fmt(p3['total'])}</div>
+            <div class="pod-pts">pts</div>
+            <div class="pod-picks">{pod_picks(p3)}</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # ── Search ──
-    search = st.text_input("🔍 Search player", placeholder="Type a name…", label_visibility="collapsed")
+    search = st.text_input("", placeholder="🔍  Search player…", label_visibility="collapsed")
 
-    # ── AI Benchmarks ──
-    st.markdown("##### 🤖 AI Benchmarks")
-    ai_rows = []
-    for p in ais:
-        s = ns
-        goals = sum(s.get(t,{}).get("goals",0) for t in p["picks"])
-        mp    = sum((s.get(t,{}).get("wins",0)+s.get(t,{}).get("draws",0)+s.get(t,{}).get("losses",0)) for t in p["picks"])
-        yc    = sum(s.get(t,{}).get("yc",0) for t in p["picks"])
-        rc    = sum(s.get(t,{}).get("rc",0) for t in p["picks"])
-        ai_rows.append({
-            "Name": p["name"],
-            "Picks": " · ".join(p["picks"]),
-            "MP": mp or "—", "⚽": goals or "—",
-            "🟨": yc or "—", "🟥": rc or "—",
-            "Score": fmt(p["total"]),
-        })
-    if ai_rows:
-        import pandas as pd
-        st.dataframe(pd.DataFrame(ai_rows), use_container_width=True, hide_index=True)
+    # ── Table ──
+    ai_rows    = "".join(lb_row_html(0, p, ns, ai=True) for p in ais)
+    human_rows = "".join(
+        lb_row_html(i+1, p, ns)
+        for i, p in enumerate(humans)
+        if not search or search.lower() in p["name"].lower()
+    )
+    st.markdown(f"""
+    <table class="lb-table">
+      <thead><tr>
+        <th style="width:28px">#</th>
+        <th>Player</th>
+        <th>Picks (P1→P8)</th>
+        <th class="r" style="width:40px">⚽</th>
+        <th class="r" style="width:36px">MP</th>
+        <th class="r" style="width:32px">W</th>
+        <th class="r" style="width:32px">D</th>
+        <th class="r" style="width:32px">L</th>
+        <th class="r" style="width:32px">CS</th>
+        <th class="r" style="width:32px">GD</th>
+        <th class="r" style="width:52px">🟨🟥</th>
+        <th class="r" style="width:58px">Score</th>
+      </tr></thead>
+      <tbody>
+        <tr class="ai-hdr"><td colspan="12">🤖 AI Benchmarks</td></tr>
+        {ai_rows}
+        <tr class="human-hdr"><td colspan="12">👤 Players — Ranked</td></tr>
+        {human_rows}
+      </tbody>
+    </table>
+    """, unsafe_allow_html=True)
 
-    st.markdown("##### 👤 Players — Ranked")
-
-    # ── Full leaderboard ──
-    import pandas as pd
-    rows = []
-    for rank, p in enumerate(humans, 1):
-        if search and search.lower() not in p["name"].lower():
-            continue
-        s = ns
-        goals  = sum(s.get(t,{}).get("goals",0)  for t in p["picks"])
-        mp     = sum((s.get(t,{}).get("wins",0)+s.get(t,{}).get("draws",0)+s.get(t,{}).get("losses",0)) for t in p["picks"])
-        wins   = sum(s.get(t,{}).get("wins",0)   for t in p["picks"])
-        draws  = sum(s.get(t,{}).get("draws",0)  for t in p["picks"])
-        losses = sum(s.get(t,{}).get("losses",0) for t in p["picks"])
-        cs     = sum(s.get(t,{}).get("cs",0)     for t in p["picks"])
-        gd     = sum(s.get(t,{}).get("gd",0)     for t in p["picks"])
-        yc     = sum(s.get(t,{}).get("yc",0)     for t in p["picks"])
-        rc     = sum(s.get(t,{}).get("rc",0)     for t in p["picks"])
-        star   = " ★" if p.get("self") else ""
-        rows.append({
-            "#":      rank,
-            "Player": p["name"] + star,
-            "Picks":  " · ".join(p["picks"]),
-            "MP":     mp or "—",
-            "⚽":     goals or "—",
-            "W":      wins or "—",
-            "D":      draws or "—",
-            "L":      losses or "—",
-            "CS":     cs or "—",
-            "GD":     gd if gd != 0 else "—",
-            "🟨":     yc or "—",
-            "🟥":     rc or "—",
-            "Score":  fmt(p["total"]),
-        })
-
-    if rows:
-        df = pd.DataFrame(rows)
-        st.dataframe(
-            df,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Score": st.column_config.NumberColumn(format="%.1f", width="small"),
-                "#":     st.column_config.NumberColumn(width="small"),
-            }
-        )
-
-    # ── Score breakdown expander ──
-    with st.expander("📊 View score breakdown by pick"):
-        selected = st.selectbox("Select player", [p["name"] for p in humans])
-        player = next((p for p in humans if p["name"] == selected), None)
+    # ── Breakdown expander ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("📊 Score breakdown by pick"):
+        sel = st.selectbox("Player", [p["name"] for p in humans], label_visibility="collapsed")
+        player = next((p for p in humans if p["name"] == sel), None)
         if player:
-            bd_cols = st.columns(4)
-            for i, (pick, score) in enumerate(player["breakdown"].items()):
-                with bd_cols[i % 4]:
-                    color = "#007B63" if score > 0 else ("#c0392b" if score < 0 else "#B8AEA5")
+            items = list(player["breakdown"].items())
+            cols  = st.columns(4)
+            for i, (k, v) in enumerate(items):
+                cls = "pos" if v > 0 else ("neg" if v < 0 else "zero")
+                with cols[i % 4]:
+                    color = "#007B63" if v > 0 else ("#F67A6D" if v < 0 else "#B8AEA5")
                     st.markdown(f"""
-                    <div style="background:white;border:1px solid #E0DBD4;border-radius:6px;
+                    <div style="background:white;border:1px solid #E0DBD4;border-radius:3px;
                                 padding:10px;text-align:center;margin-bottom:8px">
-                      <div style="font-size:10px;color:#55585A">{pick}</div>
-                      <div style="font-size:20px;font-weight:700;color:{color}">{fmt(score)}</div>
-                      <div style="font-size:9px;color:#B8AEA5">pts</div>
+                      <div style="font-size:10px;color:#55585A;margin-bottom:4px">{k}</div>
+                      <div style="font-size:22px;font-weight:700;color:{color};line-height:1">{fmt(v)}</div>
+                      <div style="font-size:9px;color:#B8AEA5;margin-top:2px">pts</div>
                     </div>""", unsafe_allow_html=True)
 
-# ══════════════════════════════════════════ TAB 2: NATION SCORES
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════ TAB 2
 with tab2:
-    group_filter = st.selectbox(
-        "Filter by group",
-        ["All Groups"] + [f"Group {g}" for g in sorted(GROUPS.keys())],
-        label_visibility="collapsed"
-    )
+    st.markdown('<div style="padding:0 20px">', unsafe_allow_html=True)
+    gf = st.selectbox("Group", ["All Groups"] + [f"Group {g}" for g in sorted(GROUPS.keys())],
+                      label_visibility="collapsed")
+    groups_show = list(GROUPS.keys()) if gf == "All Groups" else [gf.replace("Group ","")]
 
-    groups_to_show = GROUPS.keys() if group_filter == "All Groups" else [group_filter.replace("Group ","")]
-
-    for g in groups_to_show:
+    for g in groups_show:
         teams = GROUPS[g]
-        st.markdown(f"#### Group {g}")
-        cols = st.columns(len(teams))
-        sorted_teams = sorted(teams, key=lambda t: ns.get(t,{}).get("score",0), reverse=True)
-        for i, team in enumerate(sorted_teams):
-            s = ns.get(team, {})
-            played = bool(s.get("wins",0) + s.get("draws",0) + s.get("losses",0))
-            score  = s.get("score", 0)
-            is_my  = team in MY_TEAMS
-            color  = "#007B63" if score > 0 else ("#c0392b" if score < 0 else "#B8AEA5")
-            border = "3px solid #007B63" if is_my else "1px solid #E0DBD4"
-            bg     = "#E6F2F0" if is_my else "white"
-            with cols[i]:
-                st.markdown(f"""
-                <div style="background:{bg};border:{border};border-radius:6px;
-                            padding:12px;text-align:center;margin-bottom:8px">
-                  <div style="font-size:24px">{flag(team)}</div>
-                  <div style="font-size:11px;font-weight:600;margin:4px 0">{team}{"  ★" if is_my else ""}</div>
-                  <div style="font-size:22px;font-weight:800;color:{color}">{fmt(score) if played else "—"}</div>
-                  <div style="font-size:9px;color:#55585A">pts</div>
-                  {f'<div style="font-size:9px;color:#55585A;margin-top:4px">{s.get("goals",0)}G · {s.get("cs",0)}CS · 🟨{s.get("yc",0)} 🟥{s.get("rc",0)}</div>' if played else '<div style="font-size:9px;color:#B8AEA5">Not played</div>'}
-                </div>""", unsafe_allow_html=True)
-        st.divider()
+        sorted_t = sorted(teams, key=lambda t: ns.get(t,{}).get("score",0), reverse=True)
+        played_count = sum(1 for t in teams if ns.get(t,{}).get("wins",0)+ns.get(t,{}).get("draws",0)+ns.get(t,{}).get("losses",0) > 0)
+        rows_html = ""
+        for t in sorted_t:
+            s = ns.get(t, {})
+            played = bool(s.get("wins",0)+s.get("draws",0)+s.get("losses",0))
+            sc = s.get("score",0)
+            sc_cls = "fantasy-score" if sc >= 0 else "fantasy-neg"
+            is_my = t in MY_TEAMS
+            yc_style = 'style="color:#9a7d0a;font-weight:700"' if s.get("yc",0) else ""
+            rc_style = 'style="color:#c0392b;font-weight:700"' if s.get("rc",0) else ""
+            rows_html += f"""<tr{"class='myteam'" if is_my else ""}>
+              <td style="color:#333333;font-weight:600"><span style="font-size:16px;margin-right:6px">{flag(t)}</span>{t}{"  ★" if is_my else ""}</td>
+              <td class="stat-mini">{"—" if not played else s.get("goals",0)}</td>
+              <td class="stat-mini">{"—" if not played else s.get("cs",0)}</td>
+              <td class="stat-mini">{"—" if not played else s.get("gd",0)}</td>
+              <td class="stat-mini" {yc_style}>{"—" if not played else s.get("yc",0)}</td>
+              <td class="stat-mini" {rc_style}>{"—" if not played else s.get("rc",0)}</td>
+              <td class="{sc_cls}">{"—" if not played else fmt(sc)}</td>
+            </tr>"""
+        st.markdown(f"""
+        <div class="group-card">
+          <div class="group-hdr">
+            <span>Group {g}</span>
+            <small>{played_count}/{len(teams)} played</small>
+          </div>
+          <table class="grp-table">
+            <thead><tr>
+              <th>Team</th>
+              <th class="r">Goals</th><th class="r">CS</th><th class="r">GD</th>
+              <th class="r" style="color:#c8a800">🟨</th>
+              <th class="r" style="color:#c0392b">🟥</th>
+              <th class="r" style="color:#BAFFC5;background:#007B63;padding:4px 10px;border-radius:2px">Fantasy</th>
+            </tr></thead>
+            <tbody>{rows_html}</tbody>
+          </table>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# ══════════════════════════════════════════ TAB 3: FIXTURES
+# ══════════════════════════════════════════════ TAB 3
 with tab3:
-    fx_filter = st.radio(
-        "Filter",
-        ["All", "Played", "Upcoming", "My Teams ★"],
-        horizontal=True, label_visibility="collapsed"
-    )
+    st.markdown('<div style="padding:0 20px">', unsafe_allow_html=True)
+    ff = st.radio("", ["All","Played","Upcoming","My Teams ★"], horizontal=True,
+                  label_visibility="collapsed")
+    filtered = fx
+    if ff == "Played":       filtered = [f for f in fx if f["played"]]
+    elif ff == "Upcoming":   filtered = [f for f in fx if not f["played"] and not f["live"]]
+    elif ff == "My Teams ★": filtered = [f for f in fx if f["home"] in MY_TEAMS or f["away"] in MY_TEAMS]
 
-    filtered_fx = fx
-    if fx_filter == "Played":    filtered_fx = [f for f in fx if f["played"]]
-    elif fx_filter == "Upcoming":filtered_fx = [f for f in fx if not f["played"] and not f["live"]]
-    elif fx_filter == "My Teams ★":
-        filtered_fx = [f for f in fx if f["home"] in MY_TEAMS or f["away"] in MY_TEAMS]
-
-    # Group by date
-    from collections import defaultdict
     by_date = defaultdict(list)
-    for f in filtered_fx:
+    for f in filtered:
         by_date[f["date"]].append(f)
+    today = today_str()
 
     for date, matches in by_date.items():
-        st.markdown(f"**{date}**")
-        cols_per_row = 3
-        for i in range(0, len(matches), cols_per_row):
-            row_matches = matches[i:i+cols_per_row]
-            cols = st.columns(cols_per_row)
-            for j, m in enumerate(row_matches):
-                with cols[j]:
-                    hMy = m["home"] in MY_TEAMS
-                    aMy = m["away"] in MY_TEAMS
-                    if m["live"]:
-                        status_html = '<span style="color:#c0392b;font-weight:700">🔴 LIVE</span>'
-                        card_bg = "#fff5f5"
-                        border  = "2px solid #F67A6D"
-                    elif m["played"]:
-                        status_html = '<span style="color:#007B63;font-weight:600">FT</span>'
-                        card_bg = "white"
-                        border  = "3px solid #007B63"
-                    else:
-                        status_html = '<span style="color:#B8AEA5">Upcoming</span>'
-                        card_bg = "white"
-                        border  = "1px solid #E0DBD4"
+        is_today = date == today
+        label = f"📍 {date} — Today" if is_today else date
+        cards_html = ""
+        for m in matches:
+            hMy = m["home"] in MY_TEAMS
+            aMy = m["away"] in MY_TEAMS
+            if m["live"]:   cls = "live"
+            elif m["played"]: cls = "played"
+            elif is_today:  cls = "today"
+            else:           cls = "upcoming"
+            if m["played"]:
+                score_html = f'<div class="fx-score">{m["homeScore"]}–{m["awayScore"]}</div>'
+                status = "FT"
+            elif m["live"]:
+                score_html = '<div class="fx-score live-score">🔴</div>'
+                status = "LIVE"
+            else:
+                score_html = '<div class="fx-score tbd">vs</div>'
+                status = "Upcoming"
+            cards_html += f"""
+            <div class="fx-card {cls}">
+              <div class="fx-top">
+                <span class="fx-grp">Group {m['group']}</span>
+                <span>{m['date']}</span>
+              </div>
+              <div class="fx-teams">
+                <div class="fx-team">{flag(m['home'])} {m['home']}{"  ★" if hMy else ""}</div>
+                {score_html}
+                <div class="fx-team away">{m['away']} {flag(m['away'])}{"  ★" if aMy else ""}</div>
+              </div>
+              <div class="fx-bottom">
+                <span class="fx-venue">{m.get('venue','')}</span>
+                <span class="fx-status">{status}</span>
+              </div>
+            </div>"""
+        st.markdown(f'<div class="fx-day-label">{label}</div><div class="fx-grid">{cards_html}</div>',
+                    unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-                    score_html = (
-                        f'<span style="font-size:20px;font-weight:700;color:#007B63">'
-                        f'{m["homeScore"]}–{m["awayScore"]}</span>'
-                        if m["played"] or m["live"]
-                        else '<span style="font-size:14px;color:#B8AEA5">vs</span>'
-                    )
-
-                    st.markdown(f"""
-                    <div style="background:{card_bg};border:{border};border-radius:6px;
-                                padding:10px 14px;margin-bottom:8px">
-                      <div style="display:flex;justify-content:space-between;
-                                  font-size:9px;color:#55585A;margin-bottom:6px">
-                        <span>Group {m['group']}</span>
-                        <span>{m['date']}</span>
-                      </div>
-                      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-                        <span style="font-size:12px;font-weight:600">
-                          {flag(m['home'])} {m['home']}{"  ★" if hMy else ""}
-                        </span>
-                        {score_html}
-                        <span style="font-size:12px;font-weight:600;text-align:right">
-                          {m['away']} {flag(m['away'])}{"  ★" if aMy else ""}
-                        </span>
-                      </div>
-                      <div style="margin-top:4px;font-size:9px;color:#B8AEA5">
-                        {m.get('venue','') or ''} · {status_html}
-                      </div>
-                    </div>""", unsafe_allow_html=True)
-
-# ══════════════════════════════════════════ TAB 4: SCORING RULES
+# ══════════════════════════════════════════════ TAB 4
 with tab4:
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.markdown("#### Per Match")
+    st.markdown('<div style="padding:20px">', unsafe_allow_html=True)
+    c1, c2 = st.columns(2)
+    with c1:
         st.markdown("""
-| Event | Points |
-|-------|--------|
-| Goal scored | +1.5 |
-| Clean sheet | +2.0 |
-| Match win | +2.0 |
-| Positive GD (per goal) | +0.5 |
-| Yellow card | −0.5 |
-| Red card | −2.0 |
-        """)
-    with col_b:
-        st.markdown("#### Knockout Bonuses")
+        <div class="scoring-section">
+          <h4>Per Match</h4>
+          <div class="scoring-row"><span>Goal scored</span><span class="v vpos">+1.5 pts</span></div>
+          <div class="scoring-row"><span>Clean sheet</span><span class="v vpos">+2 pts</span></div>
+          <div class="scoring-row"><span>Match win</span><span class="v vpos">+2 pts</span></div>
+          <div class="scoring-row"><span>Positive GD (per goal)</span><span class="v vpos">+0.5 pt</span></div>
+          <div class="scoring-row"><span>Yellow card</span><span class="v vneg">−0.5 pt</span></div>
+          <div class="scoring-row"><span>Red card</span><span class="v vneg">−2 pts</span></div>
+        </div>
+        <div class="scoring-section">
+          <h4>Individual Awards (end of tournament)</h4>
+          <div class="scoring-row"><span>Player of Tournament</span><span class="v vbon">+15 pts</span></div>
+          <div class="scoring-row"><span>Golden Boot</span><span class="v vbon">+12 pts</span></div>
+          <div class="scoring-row"><span>Golden Glove</span><span class="v vbon">+10 pts</span></div>
+          <div class="scoring-row"><span>Best Young Player</span><span class="v vbon">+8 pts</span></div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c2:
         st.markdown("""
-| Stage | Bonus |
-|-------|-------|
-| Round of 32 | +2.5 |
-| Round of 16 | +5.0 |
-| Quarter-final | +7.5 |
-| Semi-final | +10.0 |
-| Runners-up | +15.0 |
-| Champions 🏆 | +25.0 |
-        """)
-        st.markdown("#### Individual Awards")
-        st.markdown("""
-| Award | Bonus |
-|-------|-------|
-| Player of Tournament | +15 |
-| Golden Boot | +12 |
-| Golden Glove | +10 |
-| Best Young Player | +8 |
-        """)
-    st.info("**Example:** 3–0 win → Goals +4.5 · CS +2 · GD +1.5 · Win +2 = **10 pts**")
+        <div class="scoring-section">
+          <h4>Knockout Stage Bonuses</h4>
+          <div class="scoring-row"><span>Round of 32</span><span class="v vbon">+2.5 pts</span></div>
+          <div class="scoring-row"><span>Round of 16</span><span class="v vbon">+5 pts</span></div>
+          <div class="scoring-row"><span>Quarter-final</span><span class="v vbon">+7.5 pts</span></div>
+          <div class="scoring-row"><span>Semi-final</span><span class="v vbon">+10 pts</span></div>
+          <div class="scoring-row"><span>Final (runners-up)</span><span class="v vbon">+15 pts</span></div>
+          <div class="scoring-row"><span>Champions 🏆</span><span class="v vbon">+25 pts</span></div>
+        </div>
+        <div class="eg-box">
+          3–0 win by your team:<br>
+          <strong>Goals +4.5 · CS +2 · GD +1.5 · Win +2 = 10 pts</strong><br><br>
+          Quarter-final + 2 yellow cards:<br>
+          <strong>QF +7.5 − 1 pt cards = +6.5 pts</strong>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
