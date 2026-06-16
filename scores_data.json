@@ -1,0 +1,3467 @@
+{
+  "updated_at": "16 Jun 2026 11:41 UTC",
+  "matches_played": 16,
+  "matches_live": 0,
+  "matches_total": 104,
+  "nation_scores": {
+    "Morocco": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Türkiye": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": -2,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Brazil": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Sweden": {
+      "score": 11.5,
+      "goals": 5,
+      "cs": 0,
+      "gd": 4,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Austria": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "DR Congo": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Iran": {
+      "score": 3.0,
+      "goals": 2,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "New Zealand": {
+      "score": 3.0,
+      "goals": 2,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Colombia": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Australia": {
+      "score": 8.0,
+      "goals": 2,
+      "cs": 1,
+      "gd": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Argentina": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Czechia": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": -1,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Germany": {
+      "score": 15.5,
+      "goals": 7,
+      "cs": 0,
+      "gd": 6,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Spain": {
+      "score": 2.0,
+      "goals": 0,
+      "cs": 1,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Ecuador": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": -1,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Jordan": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "South Korea": {
+      "score": 5.5,
+      "goals": 2,
+      "cs": 0,
+      "gd": 1,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Qatar": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Curaçao": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": -6,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Panama": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "South Africa": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": -2,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Ghana": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Saudi Arabia": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Algeria": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Mexico": {
+      "score": 8.0,
+      "goals": 2,
+      "cs": 1,
+      "gd": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Ivory Coast": {
+      "score": 6.0,
+      "goals": 1,
+      "cs": 1,
+      "gd": 1,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Uruguay": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Norway": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "France": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "USA": {
+      "score": 9.5,
+      "goals": 4,
+      "cs": 0,
+      "gd": 3,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Uzbekistan": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Canada": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Switzerland": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Senegal": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Japan": {
+      "score": 3.0,
+      "goals": 2,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Paraguay": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": -3,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Tunisia": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": -4,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Cape Verde": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Scotland": {
+      "score": 6.0,
+      "goals": 1,
+      "cs": 1,
+      "gd": 1,
+      "wins": 1,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Egypt": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "England": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Belgium": {
+      "score": 1.5,
+      "goals": 1,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Portugal": {
+      "score": 0.0,
+      "goals": 0,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    },
+    "Netherlands": {
+      "score": 3.0,
+      "goals": 2,
+      "cs": 0,
+      "gd": 0,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "yc": 0,
+      "rc": 0,
+      "stage": "GS"
+    }
+  },
+  "player_scores": [
+    {
+      "id": 1,
+      "name": "Vivek Dasani",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Uruguay",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "Ghana",
+        "Jordan"
+      ],
+      "total": 30.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Jordan": 0.0
+      }
+    },
+    {
+      "id": 2,
+      "name": "Abhinna Mehta",
+      "picks": [
+        "Argentina",
+        "Germany",
+        "USA",
+        "South Korea",
+        "Qatar",
+        "Norway",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "self": true,
+      "total": 36.5,
+      "breakdown": {
+        "P1 · Argentina": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Qatar": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 3,
+      "name": "Alice Darry",
+      "picks": [
+        "France",
+        "Germany",
+        "USA",
+        "Austria",
+        "Canada",
+        "Norway",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 29.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Austria": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 4,
+      "name": "Hallie Farber",
+      "picks": [
+        "England",
+        "Germany",
+        "USA",
+        "Ecuador",
+        "Sweden",
+        "Scotland",
+        "Panama",
+        "New Zealand"
+      ],
+      "total": 45.5,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Scotland": 6.0,
+        "P7 · Panama": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 5,
+      "name": "Olha Svidrun",
+      "picks": [
+        "France",
+        "Germany",
+        "Switzerland",
+        "Australia",
+        "Sweden",
+        "Norway",
+        "South Africa",
+        "New Zealand"
+      ],
+      "total": 39.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Australia": 8.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 6,
+      "name": "Adrian Alcina",
+      "picks": [
+        "Spain",
+        "Morocco",
+        "Senegal",
+        "Egypt",
+        "Ivory Coast",
+        "Türkiye",
+        "Paraguay",
+        "Cape Verde"
+      ],
+      "total": 12.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Senegal": 0.0,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 7,
+      "name": "Vishnu Kaushik",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Japan",
+        "Ecuador",
+        "Algeria",
+        "Norway",
+        "South Africa",
+        "Uzbekistan"
+      ],
+      "total": 20.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Ecuador": 0.0,
+        "P5 · Algeria": 0.0,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 8,
+      "name": "Holly Dellar",
+      "picks": [
+        "England",
+        "Netherlands",
+        "USA",
+        "South Korea",
+        "Sweden",
+        "Türkiye",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 34.0,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 9,
+      "name": "Saahil Sheth",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "Austria",
+        "Ivory Coast",
+        "Norway",
+        "Panama",
+        "Uzbekistan"
+      ],
+      "total": 24.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Austria": 0.0,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Panama": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 10,
+      "name": "Olivier Vervoot",
+      "picks": [
+        "France",
+        "Belgium",
+        "USA",
+        "South Korea",
+        "Sweden",
+        "Türkiye",
+        "South Africa",
+        "Uzbekistan"
+      ],
+      "total": 28.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Belgium": 1.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 11,
+      "name": "Mattia Baroni",
+      "picks": [
+        "Spain",
+        "Netherlands",
+        "Uruguay",
+        "Ecuador",
+        "Algeria",
+        "Norway",
+        "South Africa",
+        "Uzbekistan"
+      ],
+      "total": 6.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Algeria": 0.0,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 12,
+      "name": "George Kirkpatrick",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Ivory Coast",
+        "Türkiye",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 30.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 13,
+      "name": "Justin Cheng",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Switzerland",
+        "Ecuador",
+        "Canada",
+        "Norway",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 20.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 14,
+      "name": "Matthijs Van",
+      "picks": [
+        "France",
+        "Netherlands",
+        "USA",
+        "Austria",
+        "Ivory Coast",
+        "Norway",
+        "South Africa",
+        "New Zealand"
+      ],
+      "total": 21.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · USA": 9.5,
+        "P4 · Austria": 0.0,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 15,
+      "name": "Olli Karjalainen",
+      "picks": [
+        "France",
+        "Germany",
+        "Mexico",
+        "Ecuador",
+        "Canada",
+        "Norway",
+        "South Africa",
+        "Uzbekistan"
+      ],
+      "total": 25.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 16,
+      "name": "Ross Davidson",
+      "picks": [
+        "France",
+        "Belgium",
+        "Mexico",
+        "Egypt",
+        "Ivory Coast",
+        "Norway",
+        "Ghana",
+        "Cape Verde"
+      ],
+      "total": 17.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Belgium": 1.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 17,
+      "name": "Franco Luchisani",
+      "picks": [
+        "Brazil",
+        "Germany",
+        "Switzerland",
+        "Iran",
+        "Algeria",
+        "Türkiye",
+        "Panama",
+        "Uzbekistan"
+      ],
+      "total": 21.5,
+      "breakdown": {
+        "P1 · Brazil": 1.5,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Iran": 3.0,
+        "P5 · Algeria": 0.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Panama": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 18,
+      "name": "Arnaud Gayet",
+      "picks": [
+        "France",
+        "Netherlands",
+        "Switzerland",
+        "South Korea",
+        "Ivory Coast",
+        "Norway",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 20.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Switzerland": 1.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 19,
+      "name": "Abishek Naguleswaran",
+      "picks": [
+        "France",
+        "Germany",
+        "USA",
+        "Australia",
+        "Canada",
+        "Norway",
+        "Saudi Arabia",
+        "Uzbekistan"
+      ],
+      "total": 36.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Australia": 8.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 20,
+      "name": "Elodie Jeuffroy",
+      "picks": [
+        "France",
+        "Germany",
+        "Switzerland",
+        "Austria",
+        "Canada",
+        "Türkiye",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 23.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Austria": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 21,
+      "name": "Chris Hesford",
+      "picks": [
+        "England",
+        "Netherlands",
+        "USA",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "Cape Verde"
+      ],
+      "total": 25.5,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 22,
+      "name": "Amari Drysdale",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "Austria",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 31.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Austria": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 23,
+      "name": "Sam Roberts",
+      "picks": [
+        "France",
+        "Germany",
+        "USA",
+        "South Korea",
+        "Ivory Coast",
+        "Norway",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 41.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 24,
+      "name": "Charlie Newman",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Switzerland",
+        "Ecuador",
+        "Canada",
+        "Türkiye",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 20.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 25,
+      "name": "Shaun Collins",
+      "picks": [
+        "France",
+        "Morocco",
+        "USA",
+        "South Korea",
+        "Algeria",
+        "Czechia",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 22.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Algeria": 0.0,
+        "P6 · Czechia": 1.5,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 26,
+      "name": "Jesal Mistry",
+      "picks": [
+        "France",
+        "Germany",
+        "Mexico",
+        "Egypt",
+        "Ivory Coast",
+        "Norway",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 34.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 27,
+      "name": "Rishwith Reddy",
+      "picks": [
+        "France",
+        "Morocco",
+        "Uruguay",
+        "Egypt",
+        "Ivory Coast",
+        "Norway",
+        "Saudi Arabia",
+        "Curaçao"
+      ],
+      "total": 13.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · Curaçao": 1.5
+      }
+    },
+    {
+      "id": 28,
+      "name": "Kabir Mann",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Japan",
+        "Austria",
+        "Sweden",
+        "Norway",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 32.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Austria": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 29,
+      "name": "Florian Feder",
+      "picks": [
+        "England",
+        "Germany",
+        "USA",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 36.5,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 30,
+      "name": "Jonathan Brown",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Switzerland",
+        "South Korea",
+        "Canada",
+        "Türkiye",
+        "South Africa",
+        "New Zealand"
+      ],
+      "total": 29.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 31,
+      "name": "Alexander S. Christensen",
+      "picks": [
+        "France",
+        "Netherlands",
+        "Senegal",
+        "South Korea",
+        "Canada",
+        "Türkiye",
+        "Paraguay",
+        "Cape Verde"
+      ],
+      "total": 11.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Senegal": 0.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 32,
+      "name": "Guillaume Droesch",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "Austria",
+        "Canada",
+        "Türkiye",
+        "Ghana",
+        "Cape Verde"
+      ],
+      "total": 20.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Austria": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 33,
+      "name": "Brian O'Connell",
+      "picks": [
+        "France",
+        "Germany",
+        "USA",
+        "South Korea",
+        "Canada",
+        "Norway",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 36.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 34,
+      "name": "David Candlish",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Sweden",
+        "Norway",
+        "Ghana",
+        "Cape Verde"
+      ],
+      "total": 37.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 35,
+      "name": "Jessica Davis",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Ivory Coast",
+        "Norway",
+        "Paraguay",
+        "Cape Verde"
+      ],
+      "total": 31.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 36,
+      "name": "Philip Cuff",
+      "picks": [
+        "Argentina",
+        "Germany",
+        "Mexico",
+        "South Korea",
+        "Ivory Coast",
+        "Norway",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 38.0,
+      "breakdown": {
+        "P1 · Argentina": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Mexico": 8.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 37,
+      "name": "Henry Crowther",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Canada",
+        "Norway",
+        "South Africa",
+        "Cape Verde"
+      ],
+      "total": 25.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 38,
+      "name": "Guy Boyd",
+      "picks": [
+        "Spain",
+        "Belgium",
+        "Uruguay",
+        "Egypt",
+        "Sweden",
+        "Scotland",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 25.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Belgium": 1.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Scotland": 6.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 39,
+      "name": "Shalini Sultania",
+      "picks": [
+        "France",
+        "Germany",
+        "USA",
+        "Ecuador",
+        "Algeria",
+        "DR Congo",
+        "Paraguay",
+        "Jordan"
+      ],
+      "total": 26.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Algeria": 0.0,
+        "P6 · DR Congo": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Jordan": 0.0
+      }
+    },
+    {
+      "id": 40,
+      "name": "Jad Bitar",
+      "picks": [
+        "Argentina",
+        "Morocco",
+        "Mexico",
+        "Egypt",
+        "Ivory Coast",
+        "Norway",
+        "Saudi Arabia",
+        "Jordan"
+      ],
+      "total": 18.5,
+      "breakdown": {
+        "P1 · Argentina": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · Jordan": 0.0
+      }
+    },
+    {
+      "id": 41,
+      "name": "Bruce Rennie",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Ivory Coast",
+        "Scotland",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 42.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Scotland": 6.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 42,
+      "name": "Jeremy Honeth",
+      "picks": [
+        "Argentina",
+        "Morocco",
+        "Uruguay",
+        "Ecuador",
+        "Canada",
+        "Norway",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 6.0,
+      "breakdown": {
+        "P1 · Argentina": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 43,
+      "name": "Stephen Lavoi",
+      "picks": [
+        "France",
+        "Colombia",
+        "USA",
+        "Ecuador",
+        "Canada",
+        "Scotland",
+        "Panama",
+        "New Zealand"
+      ],
+      "total": 20.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Colombia": 0.0,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Scotland": 6.0,
+        "P7 · Panama": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 44,
+      "name": "Luc Carpinelli",
+      "picks": [
+        "France",
+        "Morocco",
+        "Switzerland",
+        "Egypt",
+        "Ivory Coast",
+        "Norway",
+        "Ghana",
+        "Uzbekistan"
+      ],
+      "total": 10.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 45,
+      "name": "Riccardo Rattellini",
+      "picks": [
+        "Spain",
+        "Germany",
+        "USA",
+        "South Korea",
+        "Sweden",
+        "Norway",
+        "Ghana",
+        "Cape Verde"
+      ],
+      "total": 44.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · South Korea": 5.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 46,
+      "name": "Leo Hotham",
+      "picks": [
+        "France",
+        "Belgium",
+        "Senegal",
+        "South Korea",
+        "Ivory Coast",
+        "Norway",
+        "Saudi Arabia",
+        "Uzbekistan"
+      ],
+      "total": 14.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Belgium": 1.5,
+        "P3 · Senegal": 0.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 47,
+      "name": "Sena Salman",
+      "picks": [
+        "France",
+        "Germany",
+        "Uruguay",
+        "Austria",
+        "Canada",
+        "Türkiye",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 20.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Austria": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 48,
+      "name": "Melissa Schoennagel",
+      "picks": [
+        "Portugal",
+        "Germany",
+        "Uruguay",
+        "Ecuador",
+        "Tunisia",
+        "DR Congo",
+        "Saudi Arabia",
+        "Uzbekistan"
+      ],
+      "total": 20.0,
+      "breakdown": {
+        "P1 · Portugal": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Tunisia": 1.5,
+        "P6 · DR Congo": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 49,
+      "name": "Sam Rawlings",
+      "picks": [
+        "England",
+        "Germany",
+        "USA",
+        "Egypt",
+        "Sweden",
+        "Scotland",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 47.0,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Scotland": 6.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 50,
+      "name": "Joerund Holterud",
+      "picks": [
+        "France",
+        "Morocco",
+        "Switzerland",
+        "Egypt",
+        "Sweden",
+        "Norway",
+        "South Africa",
+        "New Zealand"
+      ],
+      "total": 19.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 51,
+      "name": "Alex So",
+      "picks": [
+        "France",
+        "Netherlands",
+        "Japan",
+        "Australia",
+        "Algeria",
+        "Türkiye",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 18.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Japan": 3.0,
+        "P4 · Australia": 8.0,
+        "P5 · Algeria": 0.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 52,
+      "name": "Sergio Gaya",
+      "picks": [
+        "Portugal",
+        "Germany",
+        "Senegal",
+        "Ecuador",
+        "Ivory Coast",
+        "Türkiye",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 24.5,
+      "breakdown": {
+        "P1 · Portugal": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Senegal": 0.0,
+        "P4 · Ecuador": 0.0,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 53,
+      "name": "Richard Whitfield",
+      "picks": [
+        "France",
+        "Germany",
+        "Switzerland",
+        "Austria",
+        "Canada",
+        "Norway",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 20.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Austria": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 54,
+      "name": "Karim Hussain",
+      "picks": [
+        "England",
+        "Germany",
+        "Japan",
+        "South Korea",
+        "Sweden",
+        "Scotland",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 46.0,
+      "breakdown": {
+        "P1 · England": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · South Korea": 5.5,
+        "P5 · Sweden": 11.5,
+        "P6 · Scotland": 6.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 55,
+      "name": "Karolina Shepanzyk",
+      "picks": [
+        "France",
+        "Germany",
+        "Uruguay",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "Cape Verde"
+      ],
+      "total": 30.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Cape Verde": 0.0
+      }
+    },
+    {
+      "id": 56,
+      "name": "Bhavin Patel",
+      "picks": [
+        "France",
+        "Germany",
+        "Japan",
+        "Australia",
+        "Ivory Coast",
+        "Norway",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 37.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Japan": 3.0,
+        "P4 · Australia": 8.0,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Norway": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 57,
+      "name": "Jonathon Orr",
+      "picks": [
+        "France",
+        "Belgium",
+        "USA",
+        "Egypt",
+        "Ivory Coast",
+        "Türkiye",
+        "Ghana",
+        "Uzbekistan"
+      ],
+      "total": 18.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Belgium": 1.5,
+        "P3 · USA": 9.5,
+        "P4 · Egypt": 1.5,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 58,
+      "name": "Daniel Mayfield",
+      "picks": [
+        "Spain",
+        "Netherlands",
+        "Mexico",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "total": 29.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Mexico": 8.0,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 59,
+      "name": "Alexander Fyfe",
+      "picks": [
+        "Spain",
+        "Germany",
+        "USA",
+        "Ecuador",
+        "Canada",
+        "Türkiye",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "total": 30.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 60,
+      "name": "Tim Divietri",
+      "picks": [
+        "France",
+        "Netherlands",
+        "Switzerland",
+        "Ecuador",
+        "Ivory Coast",
+        "Türkiye",
+        "Saudi Arabia",
+        "New Zealand"
+      ],
+      "total": 15.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Netherlands": 3.0,
+        "P3 · Switzerland": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Ivory Coast": 6.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · Saudi Arabia": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 61,
+      "name": "Robert Pepper",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Mexico",
+        "Ecuador",
+        "Tunisia",
+        "Türkiye",
+        "Ghana",
+        "Curaçao"
+      ],
+      "total": 28.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Ecuador": 0.0,
+        "P5 · Tunisia": 1.5,
+        "P6 · Türkiye": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · Curaçao": 1.5
+      }
+    },
+    {
+      "id": 62,
+      "name": "Kai Aschick",
+      "picks": [
+        "France",
+        "Morocco",
+        "Japan",
+        "Austria",
+        "Sweden",
+        "Czechia",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 20.5,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Morocco": 1.5,
+        "P3 · Japan": 3.0,
+        "P4 · Austria": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Czechia": 1.5,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 63,
+      "name": "Azmat Medov",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Mexico",
+        "Iran",
+        "Algeria",
+        "Türkiye",
+        "South Africa",
+        "Jordan"
+      ],
+      "total": 28.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Mexico": 8.0,
+        "P4 · Iran": 3.0,
+        "P5 · Algeria": 0.0,
+        "P6 · Türkiye": 0.0,
+        "P7 · South Africa": 0.0,
+        "P8 · Jordan": 0.0
+      }
+    },
+    {
+      "id": 64,
+      "name": "Moritz Duembgen",
+      "picks": [
+        "Spain",
+        "Germany",
+        "Switzerland",
+        "Austria",
+        "Sweden",
+        "Norway",
+        "Ghana",
+        "New Zealand"
+      ],
+      "total": 33.5,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · Switzerland": 1.5,
+        "P4 · Austria": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Ghana": 0.0,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 65,
+      "name": "🤖 ChatGPT",
+      "picks": [
+        "France",
+        "Germany",
+        "Uruguay",
+        "Austria",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "ai": true,
+      "total": 30.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Austria": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    },
+    {
+      "id": 66,
+      "name": "🤖 Google Gemini",
+      "picks": [
+        "France",
+        "Germany",
+        "Uruguay",
+        "Ecuador",
+        "Sweden",
+        "Norway",
+        "Paraguay",
+        "New Zealand"
+      ],
+      "ai": true,
+      "total": 33.0,
+      "breakdown": {
+        "P1 · France": 0.0,
+        "P2 · Germany": 15.5,
+        "P3 · Uruguay": 1.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Sweden": 11.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · New Zealand": 3.0
+      }
+    },
+    {
+      "id": 67,
+      "name": "🤖 Claude",
+      "picks": [
+        "Spain",
+        "Germany",
+        "USA",
+        "Ecuador",
+        "Canada",
+        "Norway",
+        "Paraguay",
+        "Uzbekistan"
+      ],
+      "ai": true,
+      "total": 30.0,
+      "breakdown": {
+        "P1 · Spain": 2.0,
+        "P2 · Germany": 15.5,
+        "P3 · USA": 9.5,
+        "P4 · Ecuador": 0.0,
+        "P5 · Canada": 1.5,
+        "P6 · Norway": 0.0,
+        "P7 · Paraguay": 1.5,
+        "P8 · Uzbekistan": 0.0
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "date": "11 Jun",
+      "group": "A",
+      "home": "Mexico",
+      "away": "South Africa",
+      "homeScore": 2,
+      "awayScore": 0,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "12 Jun",
+      "group": "A",
+      "home": "South Korea",
+      "away": "Czechia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "12 Jun",
+      "group": "B",
+      "home": "Canada",
+      "away": "Bosnia-Herzegovina",
+      "homeScore": 1,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "13 Jun",
+      "group": "D",
+      "home": "USA",
+      "away": "Paraguay",
+      "homeScore": 4,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "13 Jun",
+      "group": "B",
+      "home": "Qatar",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "13 Jun",
+      "group": "C",
+      "home": "Brazil",
+      "away": "Morocco",
+      "homeScore": 1,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jun",
+      "group": "C",
+      "home": "Haiti",
+      "away": "Scotland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jun",
+      "group": "D",
+      "home": "Australia",
+      "away": "Türkiye",
+      "homeScore": 2,
+      "awayScore": 0,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jun",
+      "group": "E",
+      "home": "Germany",
+      "away": "Curaçao",
+      "homeScore": 7,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jun",
+      "group": "F",
+      "home": "Netherlands",
+      "away": "Japan",
+      "homeScore": 2,
+      "awayScore": 2,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jun",
+      "group": "E",
+      "home": "Ivory Coast",
+      "away": "Ecuador",
+      "homeScore": 1,
+      "awayScore": 0,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "15 Jun",
+      "group": "F",
+      "home": "Sweden",
+      "away": "Tunisia",
+      "homeScore": 5,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "15 Jun",
+      "group": "H",
+      "home": "Spain",
+      "away": "Cape Verde Islands",
+      "homeScore": 0,
+      "awayScore": 0,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "15 Jun",
+      "group": "G",
+      "home": "Belgium",
+      "away": "Egypt",
+      "homeScore": 1,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "15 Jun",
+      "group": "H",
+      "home": "Saudi Arabia",
+      "away": "Uruguay",
+      "homeScore": 1,
+      "awayScore": 1,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "16 Jun",
+      "group": "G",
+      "home": "Iran",
+      "away": "New Zealand",
+      "homeScore": 2,
+      "awayScore": 2,
+      "venue": "",
+      "played": true,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "16 Jun",
+      "group": "I",
+      "home": "France",
+      "away": "Senegal",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "16 Jun",
+      "group": "I",
+      "home": "Iraq",
+      "away": "Norway",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "17 Jun",
+      "group": "J",
+      "home": "Argentina",
+      "away": "Algeria",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "17 Jun",
+      "group": "J",
+      "home": "Austria",
+      "away": "Jordan",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "17 Jun",
+      "group": "K",
+      "home": "Portugal",
+      "away": "DR Congo",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "17 Jun",
+      "group": "L",
+      "home": "England",
+      "away": "Croatia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "17 Jun",
+      "group": "L",
+      "home": "Ghana",
+      "away": "Panama",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "18 Jun",
+      "group": "K",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "18 Jun",
+      "group": "A",
+      "home": "Czechia",
+      "away": "South Africa",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "18 Jun",
+      "group": "B",
+      "home": "Switzerland",
+      "away": "Bosnia-Herzegovina",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "18 Jun",
+      "group": "B",
+      "home": "Canada",
+      "away": "Qatar",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "19 Jun",
+      "group": "A",
+      "home": "Mexico",
+      "away": "South Korea",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "19 Jun",
+      "group": "D",
+      "home": "USA",
+      "away": "Australia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "19 Jun",
+      "group": "C",
+      "home": "Scotland",
+      "away": "Morocco",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "20 Jun",
+      "group": "C",
+      "home": "Brazil",
+      "away": "Haiti",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "20 Jun",
+      "group": "D",
+      "home": "Türkiye",
+      "away": "Paraguay",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "20 Jun",
+      "group": "F",
+      "home": "Netherlands",
+      "away": "Sweden",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "20 Jun",
+      "group": "E",
+      "home": "Germany",
+      "away": "Ivory Coast",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "21 Jun",
+      "group": "E",
+      "home": "Ecuador",
+      "away": "Curaçao",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "21 Jun",
+      "group": "F",
+      "home": "Tunisia",
+      "away": "Japan",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "21 Jun",
+      "group": "H",
+      "home": "Spain",
+      "away": "Saudi Arabia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "21 Jun",
+      "group": "G",
+      "home": "Belgium",
+      "away": "Iran",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "21 Jun",
+      "group": "H",
+      "home": "Uruguay",
+      "away": "Cape Verde Islands",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "22 Jun",
+      "group": "G",
+      "home": "New Zealand",
+      "away": "Egypt",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "22 Jun",
+      "group": "J",
+      "home": "Argentina",
+      "away": "Austria",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "22 Jun",
+      "group": "I",
+      "home": "France",
+      "away": "Iraq",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "23 Jun",
+      "group": "I",
+      "home": "Norway",
+      "away": "Senegal",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "23 Jun",
+      "group": "J",
+      "home": "Jordan",
+      "away": "Algeria",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "23 Jun",
+      "group": "K",
+      "home": "Portugal",
+      "away": "Uzbekistan",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "23 Jun",
+      "group": "L",
+      "home": "England",
+      "away": "Ghana",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "23 Jun",
+      "group": "L",
+      "home": "Panama",
+      "away": "Croatia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "24 Jun",
+      "group": "K",
+      "home": "Colombia",
+      "away": "DR Congo",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "24 Jun",
+      "group": "B",
+      "home": "Switzerland",
+      "away": "Canada",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "24 Jun",
+      "group": "B",
+      "home": "Bosnia-Herzegovina",
+      "away": "Qatar",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "24 Jun",
+      "group": "C",
+      "home": "Morocco",
+      "away": "Haiti",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "24 Jun",
+      "group": "C",
+      "home": "Scotland",
+      "away": "Brazil",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "A",
+      "home": "Czechia",
+      "away": "Mexico",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "A",
+      "home": "South Africa",
+      "away": "South Korea",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "E",
+      "home": "Ecuador",
+      "away": "Germany",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "E",
+      "home": "Curaçao",
+      "away": "Ivory Coast",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "F",
+      "home": "Tunisia",
+      "away": "Netherlands",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "25 Jun",
+      "group": "F",
+      "home": "Japan",
+      "away": "Sweden",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "26 Jun",
+      "group": "D",
+      "home": "Türkiye",
+      "away": "USA",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "26 Jun",
+      "group": "D",
+      "home": "Paraguay",
+      "away": "Australia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "26 Jun",
+      "group": "I",
+      "home": "Norway",
+      "away": "France",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "26 Jun",
+      "group": "I",
+      "home": "Senegal",
+      "away": "Iraq",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "H",
+      "home": "Uruguay",
+      "away": "Spain",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "H",
+      "home": "Cape Verde Islands",
+      "away": "Saudi Arabia",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "G",
+      "home": "New Zealand",
+      "away": "Belgium",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "G",
+      "home": "Egypt",
+      "away": "Iran",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "L",
+      "home": "Panama",
+      "away": "England",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "L",
+      "home": "Croatia",
+      "away": "Ghana",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "K",
+      "home": "Colombia",
+      "away": "Portugal",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "27 Jun",
+      "group": "K",
+      "home": "DR Congo",
+      "away": "Uzbekistan",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "28 Jun",
+      "group": "J",
+      "home": "Jordan",
+      "away": "Argentina",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "28 Jun",
+      "group": "J",
+      "home": "Algeria",
+      "away": "Austria",
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "28 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "29 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "29 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "30 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "30 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "30 Jun",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "1 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "1 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "1 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "2 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "2 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "2 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "3 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "3 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "3 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "4 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "4 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "4 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "5 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "6 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "6 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "7 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "7 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "7 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "9 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "10 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "11 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "12 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "14 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "15 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "18 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    },
+    {
+      "date": "19 Jul",
+      "group": "?",
+      "home": null,
+      "away": null,
+      "homeScore": null,
+      "awayScore": null,
+      "venue": "",
+      "played": false,
+      "live": false,
+      "notable": ""
+    }
+  ]
+}
