@@ -52,7 +52,7 @@ st.markdown("""
 }
 
 /* ── Base ── */
-.stApp { background: var(--le) !important; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
+.stApp { background: var(--le) !important; font-family: "Inter", "Segoe UI", Arial, sans-serif; font-size: 14px; line-height: 1.5; }
 .stApp > header { display: none !important; }
 #MainMenu, footer { display: none !important; }
 [data-testid="stDecoration"] { display: none !important; }
@@ -80,7 +80,7 @@ section[data-testid="stSidebar"] { display: none; }
   font-weight: 500;
 }
 .wc-header-right {
-  font-size: 10px;
+  font-size: 11px;
   color: rgba(255,255,255,0.65);
   text-align: right;
   line-height: 1.5;
@@ -92,7 +92,7 @@ section[data-testid="stSidebar"] { display: none; }
   background: var(--ag5);
   border-bottom: 1px solid var(--ag10);
   padding: 4px 20px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--grey);
   display: flex;
   align-items: center;
@@ -165,7 +165,7 @@ section[data-testid="stSidebar"] { display: none; }
 .pod-gold .pod-score { color: var(--mint); }
 .pod-pts { font-size: 10px; color: var(--grey); margin-top: 2px; }
 .pod-gold .pod-pts { color: rgba(255,255,255,.6); }
-.pod-picks { font-size: 9px; color: var(--e300); margin-top: 5px; line-height: 1.5; }
+.pod-picks { font-size: 11px; color: var(--e300); margin-top: 5px; line-height: 1.6; }
 .pod-gold .pod-picks { color: rgba(255,255,255,.45); }
 
 /* ── Search box ── */
@@ -182,8 +182,8 @@ section[data-testid="stSidebar"] { display: none; }
 /* ── Leaderboard table ── */
 .lb-table { width: 100%; border-collapse: collapse; }
 .lb-table thead th {
-  font-size: 11px; letter-spacing: .5px; text-transform: uppercase;
-  color: var(--sb); padding: 8px; border-bottom: 2px solid var(--ag);
+  font-size: 12px; letter-spacing: .3px; text-transform: uppercase;
+  color: var(--sb); padding: 9px 8px; border-bottom: 2px solid var(--ag);
   font-weight: 700; background: white; text-align: left;
   position: sticky; top: 0; z-index: 1;
 }
@@ -195,13 +195,13 @@ section[data-testid="stSidebar"] { display: none; }
 .lb-row:hover { background: var(--ag5); }
 .lb-row.self { border-left: 3px solid var(--ag); background: var(--ag5); }
 .lb-row.ai   { border-left: 3px solid var(--saxe); background: var(--ice); font-style: italic; }
-.lb-row td   { padding: 7px 8px; font-size: 12px; vertical-align: middle; }
-.rank  { font-size: 11px; color: var(--e300); font-weight: 500; width: 26px; }
-.pname { font-weight: 600; color: var(--sb); }
+.lb-row td   { padding: 9px 8px; font-size: 13px; vertical-align: middle; line-height: 1.4; }
+.rank  { font-size: 12px; color: var(--e300); font-weight: 600; width: 26px; }
+.pname { font-weight: 700; color: var(--sb); font-size: 13px; }
 .pname.ai { color: var(--saxe); }
-.picks { font-size: 10px; color: var(--e300); line-height: 1.5; }
-.stat  { font-size: 11px; color: var(--grey); text-align: right; }
-.score { font-size: 14px; font-weight: 700; text-align: right; color: var(--ag); }
+.picks { font-size: 11px; color: var(--e300); line-height: 1.6; }
+.stat  { font-size: 12px; color: var(--grey); text-align: right; font-weight: 500; }
+.score { font-size: 15px; font-weight: 700; text-align: right; color: var(--ag); }
 .score.neg  { color: var(--coral); }
 .score.zero { color: var(--e300); }
 .yc  { color: #9a7d0a; font-weight: 700; }
@@ -218,21 +218,27 @@ section[data-testid="stSidebar"] { display: none; }
 }
 
 /* ── Group cards ── */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 20px;
+}
 .group-card {
   background: white; border: 1px solid var(--e100);
-  border-radius: 3px; overflow: hidden; margin-bottom: 14px;
+  border-radius: 3px; overflow: hidden; margin-bottom: 0;
 }
 .group-hdr {
   background: var(--ag); padding: 8px 14px;
   display: flex; justify-content: space-between; align-items: center;
 }
-.group-hdr span { font-size: 11px; font-weight: 700; color: white; letter-spacing: 1px; text-transform: uppercase; }
+.group-hdr span { font-size: 12px; font-weight: 700; color: white; letter-spacing: 0.5px; text-transform: uppercase; }
 .group-hdr small { font-size: 10px; color: rgba(255,255,255,.6); }
 .grp-table { width: 100%; border-collapse: collapse; }
 .grp-table thead th {
-  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
-  color: var(--grey); padding: 6px 10px; border-bottom: 1px solid var(--e100);
-  font-weight: 600; text-align: left;
+  font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--grey); padding: 7px 12px; border-bottom: 1px solid var(--e100);
+  font-weight: 700; text-align: left;
 }
 .grp-table thead th.r { text-align: right; }
 .grp-table tbody tr { border-bottom: 1px solid rgba(224,219,212,.4); transition: background .1s; }
@@ -243,7 +249,7 @@ section[data-testid="stSidebar"] { display: none; }
 .fantasy-score { font-weight: 700; color: var(--ag); text-align: right; }
 .fantasy-neg   { color: var(--coral) !important; font-weight: 700; text-align: right; }
 .fantasy-zero  { color: var(--e300) !important; font-weight: 700; text-align: right; }
-.stat-mini     { font-size: 10px; color: var(--grey); text-align: right; }
+.stat-mini     { font-size: 12px; color: var(--grey); text-align: right; font-weight: 500; }
 
 /* ── Fixture cards ── */
 .fx-day-label {
@@ -261,10 +267,10 @@ section[data-testid="stSidebar"] { display: none; }
 .fx-card.live    { border-left: 3px solid var(--coral); background: #fff8f7; }
 .fx-card.today   { border-left: 3px solid var(--gold); background: #fffbf0; }
 .fx-card.upcoming{ border-left: 3px solid var(--e100); }
-.fx-top { display: flex; justify-content: space-between; font-size: 9px; color: var(--grey); margin-bottom: 6px; }
+.fx-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--grey); margin-bottom: 6px; }
 .fx-grp { font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 .fx-teams { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.fx-team { font-size: 12px; font-weight: 600; color: var(--sb); flex: 1; }
+.fx-team { font-size: 13px; font-weight: 600; color: var(--sb); flex: 1; }
 .fx-team.away { text-align: right; }
 .fx-score {
   font-family: "EB Garamond", serif;
@@ -273,7 +279,7 @@ section[data-testid="stSidebar"] { display: none; }
 }
 .fx-score.tbd { font-size: 12px; color: var(--e300); font-family: inherit; font-weight: 400; }
 .fx-score.live-score { color: var(--coral); }
-.fx-bottom { display: flex; justify-content: space-between; margin-top: 5px; font-size: 9px; }
+.fx-bottom { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; }
 .fx-venue { color: var(--e300); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
 .fx-status { color: var(--grey); font-weight: 600; }
 .fx-notable { font-size: 9px; color: var(--coral); margin-top: 3px; font-weight: 500; }
@@ -306,8 +312,8 @@ section[data-testid="stSidebar"] { display: none; }
 }
 .scoring-row {
   display: flex; justify-content: space-between;
-  padding: 4px 0; border-bottom: 1px solid rgba(224,219,212,.5);
-  font-size: 11px; color: var(--grey);
+  padding: 6px 0; border-bottom: 1px solid rgba(224,219,212,.5);
+  font-size: 13px; color: var(--grey);
 }
 .scoring-row:last-child { border-bottom: none; }
 .scoring-row .v { font-weight: 700; }
@@ -440,6 +446,7 @@ NAME_MAP = {
     "Curaçao":"Curaçao","Curacao":"Curaçao",
     "Czech Republic":"Czechia","Turkey":"Türkiye",
     "Congo DR":"DR Congo","Democratic Republic of Congo":"DR Congo",
+    "Cape Verde Islands":"Cape Verde",
 }
 MY_TEAMS = {"Argentina","Germany","USA","South Korea","Qatar","Norway","Saudi Arabia","New Zealand"}
 
@@ -592,7 +599,7 @@ def fetch_data():
 
     for t, s in scores.items():
         pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
-        pts += max(0, s["gd"]) * 0.5
+        pts += s["gd"] * 0.5
         pts -= s["yc"]*0.5 + s["rc"]*2.0
         s["score"] = round(pts, 1)
 
@@ -638,7 +645,7 @@ def fetch_data():
     # Recompute fantasy points with cards included
     for t, s in scores.items():
         pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
-        pts += max(0, s["gd"]) * 0.5
+        pts += s["gd"] * 0.5
         pts -= s["yc"]*0.5 + s["rc"]*2.0
         s["score"] = round(pts, 1)
     # Recompute player scores with updated nation scores
@@ -831,11 +838,14 @@ with tab1:
 
 # ══════════════════════════════════════════════ TAB 2
 with tab2:
-    st.markdown('<div style="padding:0 20px">', unsafe_allow_html=True)
+    st.markdown('<div style="padding:4px 20px 0">', unsafe_allow_html=True)
     gf = st.selectbox("Group", ["All Groups"] + [f"Group {g}" for g in sorted(GROUPS.keys())],
                       label_visibility="collapsed")
+    st.markdown('</div>', unsafe_allow_html=True)
     groups_show = list(GROUPS.keys()) if gf == "All Groups" else [gf.replace("Group ","")]
 
+    # Build all group cards then wrap in grid
+    all_group_cards_html = ""
     for g in groups_show:
         teams = GROUPS[g]
         sorted_t = sorted(teams, key=lambda t: ns.get(t,{}).get("score",0), reverse=True)
@@ -850,7 +860,7 @@ with tab2:
             yc_style = 'style="color:#9a7d0a;font-weight:700"' if s.get("yc",0) else ""
             rc_style = 'style="color:#c0392b;font-weight:700"' if s.get("rc",0) else ""
             rows_html += f"""<tr{"class='myteam'" if is_my else ""}>
-              <td><span style="font-size:16px;margin-right:6px">{flag(t)}</span>{t}{"  ★" if is_my else ""}</td>
+              <td style="color:#000000;font-weight:600"><span style="font-size:16px;margin-right:6px">{flag(t)}</span>{t}{"  ★" if is_my else ""}</td>
               <td class="stat-mini">{"—" if not played else s.get("goals",0)}</td>
               <td class="stat-mini">{"—" if not played else s.get("cs",0)}</td>
               <td class="stat-mini">{"—" if not played else s.get("gd",0)}</td>
@@ -858,7 +868,7 @@ with tab2:
               <td class="stat-mini" {rc_style}>{"—" if not played else s.get("rc",0)}</td>
               <td class="{sc_cls}">{"—" if not played else fmt(sc)}</td>
             </tr>"""
-        st.markdown(f"""
+        all_group_cards_html += f"""
         <div class="group-card">
           <div class="group-hdr">
             <span>Group {g}</span>
@@ -874,9 +884,10 @@ with tab2:
             </tr></thead>
             <tbody>{rows_html}</tbody>
           </table>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        </div>"""
+
+    # Render all cards inside the 2-column grid
+    st.markdown(f'<div class="groups-grid">{all_group_cards_html}</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════ TAB 3
 with tab3:

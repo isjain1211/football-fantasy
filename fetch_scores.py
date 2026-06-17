@@ -148,6 +148,7 @@ NAME_MAP = {
     "England":                    "England",
     "Iran":                       "Iran",
     "Islamic Republic of Iran":   "Iran",
+    "Cape Verde Islands":          "Cape Verde",
 }
 
 def norm(name):
@@ -291,6 +292,7 @@ def compute_nation_scores(matches, card_data):
             continue
 
         if h_in: scores[home]["goals"] += hg
+    
         if a_in: scores[away]["goals"] += ag
         if h_in and ag == 0: scores[home]["cs"] += 1
         if a_in and hg == 0: scores[away]["cs"] += 1
@@ -320,7 +322,7 @@ def compute_nation_scores(matches, card_data):
         pts  = s["goals"] * 1.5
         pts += s["cs"]    * 2.0
         pts += s["wins"]  * 2.0
-        pts += max(0, s["gd"]) * 0.5
+        pts += s["gd"] * 0.5
         pts -= s["yc"]    * 0.5
         pts -= s["rc"]    * 2.0
         s["score"] = round(pts, 1)
