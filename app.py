@@ -9,6 +9,7 @@ Secret: FOOTBALL_API_TOKEN = "your_token"
 import streamlit as st
 import requests
 import pandas as pd
+from bs4 import BeautifulSoup
 from datetime import datetime, timezone, date as dt_date
 from collections import defaultdict
 
@@ -237,7 +238,7 @@ section[data-testid="stSidebar"] { display: none; }
 .grp-table tbody tr { border-bottom: 1px solid rgba(224,219,212,.4); transition: background .1s; }
 .grp-table tbody tr:last-child { border-bottom: none; }
 .grp-table tbody tr:hover { background: var(--ag5); }
-.grp-table tbody td { padding: 7px 10px; font-size: 12px; vertical-align: middle; color: #333333; }
+.grp-table tbody td { padding: 7px 10px; font-size: 12px; vertical-align: middle; }
 .grp-table tbody tr.myteam { background: var(--ag5); }
 .fantasy-score { font-weight: 700; color: var(--ag); text-align: right; }
 .fantasy-neg   { color: var(--coral) !important; font-weight: 700; text-align: right; }
@@ -442,6 +443,24 @@ NAME_MAP = {
 }
 MY_TEAMS = {"Argentina","Germany","USA","South Korea","Qatar","Norway","Saudi Arabia","New Zealand"}
 
+# Wikipedia group pages for card scraping
+WIKI_GROUPS = {
+    "A":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_A",
+    "B":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_B",
+    "C":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_C",
+    "D":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_D",
+    "E":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_E",
+    "F":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_F",
+    "G":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_G",
+    "H":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_H",
+    "I":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_I",
+    "J":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_J",
+    "K":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_K",
+    "L":"https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_L",
+}
+CARD_ALTS = {"Yellow card", "Red card", "Yellow-red card"}
+WIKI_UA   = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+
 def norm(n): return NAME_MAP.get(n, n)
 def flag(n): return FLAGS.get(norm(n), "🏳️")
 def fmt(n):
@@ -463,6 +482,60 @@ def today_str():
 # ─────────────────────────────────────────────────────────────
 # DATA FETCH — cached 5 min
 # ─────────────────────────────────────────────────────────────
+@st.cache_data(ttl=300)
+def scrape_cards():
+    """Scrape yellow/red card data from Wikipedia group pages. Cached 5 min."""
+    all_cards = {}
+    for group, url in WIKI_GROUPS.items():
+        try:
+            r = requests.get(url, headers=WIKI_UA, timeout=10)
+            if r.status_code != 200:
+                continue
+            soup = BeautifulSoup(r.text, "html.parser")
+            boxes = soup.find_all("div", {"class": "footballbox"})
+            lineup_tables = [
+                t for t in soup.find_all("table")
+                if len(t.find_all("img", {"alt": lambda a: a in CARD_ALTS})) > 0
+                and "Manager:" in t.get_text()
+                and len(t.find_all("tr")) > 10
+            ]
+            for tbl in lineup_tables:
+                prev_box = None
+                for box in boxes:
+                    if box.sourceline < tbl.sourceline:
+                        prev_box = box
+                    else:
+                        break
+                if not prev_box:
+                    continue
+                home_th = prev_box.find("th", {"class": "fhome"})
+                away_th = prev_box.find("th", {"class": "faway"})
+                if not home_th or not away_th:
+                    continue
+                home_a = home_th.find("a")
+                away_a = away_th.find("a")
+                home_name = norm(home_a.get_text(strip=True) if home_a else home_th.get_text(strip=True))
+                away_name = norm(away_a.get_text(strip=True) if away_a else away_th.get_text(strip=True))
+                first_row = tbl.find("tr")
+                if not first_row:
+                    continue
+                tds = first_row.find_all("td", recursive=False)
+                if len(tds) < 3:
+                    continue
+                for team, td in [(home_name, tds[0]), (away_name, tds[2])]:
+                    if team not in all_cards:
+                        all_cards[team] = {"yc": 0, "rc": 0}
+                    for img in td.find_all("img", {"alt": lambda a: a in CARD_ALTS}):
+                        alt = img.get("alt", "")
+                        if alt == "Yellow card":
+                            all_cards[team]["yc"] += 1
+                        elif alt in ("Red card", "Yellow-red card"):
+                            all_cards[team]["rc"] += 1
+        except Exception:
+            continue
+    return all_cards
+
+
 @st.cache_data(ttl=300)
 def fetch_data():
     try:
@@ -556,6 +629,28 @@ def fetch_data():
         })
 
     now = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+    # Merge Wikipedia card data into nation scores
+    card_data = scrape_cards()
+    for team, cards in card_data.items():
+        if team in scores:
+            scores[team]["yc"] = cards.get("yc", 0)
+            scores[team]["rc"] = cards.get("rc", 0)
+    # Recompute fantasy points with cards included
+    for t, s in scores.items():
+        pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
+        pts += max(0, s["gd"]) * 0.5
+        pts -= s["yc"]*0.5 + s["rc"]*2.0
+        s["score"] = round(pts, 1)
+    # Recompute player scores with updated nation scores
+    player_scores = []
+    for p in PLAYERS:
+        total = 0.0; bd = {}
+        for i, pick in enumerate(p["picks"]):
+            sv = scores.get(pick, {}).get("score", 0.0)
+            total += sv
+            bd[f"P{i+1} · {pick}"] = sv
+        player_scores.append({**p, "total": round(total,1), "breakdown": bd})
+
     return {
         "ns": scores, "ps": player_scores, "fx": fx_list,
         "played": len(finished), "live_count": len(live),
@@ -755,7 +850,7 @@ with tab2:
             yc_style = 'style="color:#9a7d0a;font-weight:700"' if s.get("yc",0) else ""
             rc_style = 'style="color:#c0392b;font-weight:700"' if s.get("rc",0) else ""
             rows_html += f"""<tr{"class='myteam'" if is_my else ""}>
-              <td style="color:#333333;font-weight:600"><span style="font-size:16px;margin-right:6px">{flag(t)}</span>{t}{"  ★" if is_my else ""}</td>
+              <td><span style="font-size:16px;margin-right:6px">{flag(t)}</span>{t}{"  ★" if is_my else ""}</td>
               <td class="stat-mini">{"—" if not played else s.get("goals",0)}</td>
               <td class="stat-mini">{"—" if not played else s.get("cs",0)}</td>
               <td class="stat-mini">{"—" if not played else s.get("gd",0)}</td>

@@ -1,29 +1,51 @@
 """
 WC 2026 Fantasy Pool — Score Fetcher
 =====================================
-Run this script to fetch live World Cup data from football-data.org,
-compute all fantasy scores, and write scores_data.json.
-
-The HTML dashboard reads scores_data.json — no API calls in the browser at all.
+Data sources:
+  - football-data.org  → match scores, fixtures, results (existing token)
+  - Wikipedia          → yellow/red cards per team (free, no token needed)
+                         scraped with BeautifulSoup — no Selenium, no JS
 
 Usage:
+    pip install requests beautifulsoup4
     python fetch_scores.py
 
-Requirements:
-    pip install requests
+Then open wc2026_dashboard.html in your browser.
 """
 
 import requests
 import json
 import sys
+import time
 from datetime import datetime, timezone
+from bs4 import BeautifulSoup
 
 # ─────────────────────────────────────────────────────────────
-# CONFIG — paste your football-data.org token here
+# CONFIG
 # ─────────────────────────────────────────────────────────────
-API_TOKEN = "715a8137efc14ac0b72173f9572bc5a9"
-API_BASE  = "https://api.football-data.org/v4"
+FD_TOKEN    = "715a8137efc14ac0b72173f9572bc5a9"  # football-data.org
+FD_BASE     = "https://api.football-data.org/v4"
 OUTPUT_FILE = "scores_data.json"
+
+# Wikipedia group pages — one per group, pure HTML, no JS needed
+WIKI_GROUPS = {
+    "A": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_A",
+    "B": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_B",
+    "C": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_C",
+    "D": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_D",
+    "E": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_E",
+    "F": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_F",
+    "G": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_G",
+    "H": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_H",
+    "I": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_I",
+    "J": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_J",
+    "K": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_K",
+    "L": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_L",
+}
+WIKI_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+}
+CARD_ALTS = {"Yellow card", "Red card", "Yellow-red card"}
 
 # ─────────────────────────────────────────────────────────────
 # PLAYERS — all 67 participants + AI benchmarks
@@ -100,67 +122,160 @@ PLAYERS = [
 
 # ─────────────────────────────────────────────────────────────
 # TEAM NAME NORMALISATION
-# football-data.org uses different names than our app
+# api-football uses slightly different names in some cases
 # ─────────────────────────────────────────────────────────────
 NAME_MAP = {
-    "United States":          "USA",
-    "Korea Republic":         "South Korea",
-    "Côte d'Ivoire":          "Ivory Coast",
-    "Bosnia and Herzegovina": "Bosnia & Herz.",
-    "Curaçao":                "Curaçao",
-    "Curacao":                "Curaçao",
-    "Czech Republic":         "Czechia",
-    "Turkey":                 "Türkiye",
-    "Congo DR":               "DR Congo",
-    "Democratic Republic of Congo": "DR Congo",
-    "England":                "England",
-    "Scotland":               "Scotland",
+    "United States":              "USA",
+    "Korea Republic":             "South Korea",
+    "South Korea":                "South Korea",
+    "Côte d'Ivoire":              "Ivory Coast",
+    "Cote d'Ivoire":              "Ivory Coast",
+    "Bosnia and Herzegovina":     "Bosnia & Herz.",
+    "Bosnia":                     "Bosnia & Herz.",
+    "Curaçao":                    "Curaçao",
+    "Curacao":                    "Curaçao",
+    "Czech Republic":             "Czechia",
+    "Czechia":                    "Czechia",
+    "Turkey":                     "Türkiye",
+    "Türkiye":                    "Türkiye",
+    "Congo DR":                   "DR Congo",
+    "DR Congo":                   "DR Congo",
+    "Democratic Republic of Congo":"DR Congo",
+    "New Zealand":                "New Zealand",
+    "Saudi Arabia":               "Saudi Arabia",
+    "Cape Verde":                 "Cape Verde",
+    "Scotland":                   "Scotland",
+    "England":                    "England",
+    "Iran":                       "Iran",
+    "Islamic Republic of Iran":   "Iran",
 }
 
 def norm(name):
     return NAME_MAP.get(name, name)
 
+
 # ─────────────────────────────────────────────────────────────
-# FETCH MATCHES FROM FOOTBALL-DATA.ORG
+# STEP 1: FETCH MATCH SCORES from football-data.org
+# 1 API call, returns all 104 fixtures with scores
 # ─────────────────────────────────────────────────────────────
 def fetch_matches():
-    headers = {"X-Auth-Token": API_TOKEN}
-    url = f"{API_BASE}/competitions/WC/matches"
-    print(f"Fetching: {url}")
-    r = requests.get(url, headers=headers, timeout=15)
+    print("📡 Step 1: Fetching match scores from football-data.org…")
+    r = requests.get(
+        f"{FD_BASE}/competitions/WC/matches",
+        headers={"X-Auth-Token": FD_TOKEN},
+        timeout=15
+    )
     if r.status_code == 403:
-        print("ERROR: Invalid API token. Check your token at football-data.org")
-        sys.exit(1)
-    if r.status_code == 429:
-        print("ERROR: Rate limit hit. Wait a minute and try again.")
+        print("ERROR: Invalid football-data.org token")
         sys.exit(1)
     r.raise_for_status()
-    data = r.json()
-    matches = data.get("matches", [])
-    print(f"  → {len(matches)} total matches fetched")
+    matches = r.json().get("matches", [])
     finished = [m for m in matches if m["status"] == "FINISHED"]
     live     = [m for m in matches if m["status"] in ("IN_PLAY","PAUSED")]
-    upcoming = [m for m in matches if m["status"] in ("SCHEDULED","TIMED")]
-    print(f"  → {len(finished)} finished, {len(live)} live, {len(upcoming)} upcoming")
+    print(f"   → {len(matches)} fixtures | {len(finished)} finished | {len(live)} live")
     return matches
 
-# ─────────────────────────────────────────────────────────────
-# COMPUTE NATION FANTASY SCORES
-# ─────────────────────────────────────────────────────────────
-def compute_nation_scores(matches):
-    # Collect all teams picked by anyone
-    all_picked = set()
-    for p in PLAYERS:
-        for t in p["picks"]:
-            all_picked.add(t)
 
-    # Initialise scores
+# ─────────────────────────────────────────────────────────────
+# STEP 2: SCRAPE CARDS from Wikipedia
+# 12 requests (one per group page), pure HTML, no token needed
+# Wikipedia lineup tables use card icon images with alt="Yellow card" etc.
+# ─────────────────────────────────────────────────────────────
+def scrape_all_cards():
+    print("\n🔍 Step 2: Scraping card data from Wikipedia…")
+    all_cards = {}
+
+    for group, url in WIKI_GROUPS.items():
+        try:
+            r = requests.get(url, headers=WIKI_HEADERS, timeout=10)
+            if r.status_code != 200:
+                print(f"   Group {group}: HTTP {r.status_code} — skipping")
+                continue
+
+            soup = BeautifulSoup(r.text, "html.parser")
+            group_cards = {}
+
+            # Each played match has a footballbox (score header) + lineup table
+            # Lineup table row[0] has td[0]=home lineup, td[2]=away lineup
+            # Card images have alt="Yellow card", "Red card", or "Yellow-red card"
+            boxes = soup.find_all("div", {"class": "footballbox"})
+
+            # Get all lineup tables: must have Manager: text + card images + 10+ rows
+            lineup_tables = [
+                t for t in soup.find_all("table")
+                if len(t.find_all("img", {"alt": lambda a: a in CARD_ALTS})) > 0
+                and "Manager:" in t.get_text()
+                and len(t.find_all("tr")) > 10
+            ]
+
+            for tbl in lineup_tables:
+                # Find the footballbox that precedes this lineup table in the DOM
+                prev_box = None
+                for box in boxes:
+                    if box.sourceline < tbl.sourceline:
+                        prev_box = box
+                    else:
+                        break
+                if not prev_box:
+                    continue
+
+                # Get team names from footballbox header
+                home_th = prev_box.find("th", {"class": "fhome"})
+                away_th = prev_box.find("th", {"class": "faway"})
+                if not home_th or not away_th:
+                    continue
+                home_a = home_th.find("a")
+                away_a = away_th.find("a")
+                home_name = norm(home_a.get_text(strip=True) if home_a else home_th.get_text(strip=True))
+                away_name = norm(away_a.get_text(strip=True) if away_a else away_th.get_text(strip=True))
+
+                # First row of lineup table: td[0]=home, td[2]=away
+                first_row = tbl.find("tr")
+                if not first_row:
+                    continue
+                tds = first_row.find_all("td", recursive=False)
+                if len(tds) < 3:
+                    continue
+
+                for team, td in [(home_name, tds[0]), (away_name, tds[2])]:
+                    if team not in group_cards:
+                        group_cards[team] = {"yc": 0, "rc": 0}
+                    for img in td.find_all("img", {"alt": lambda a: a in CARD_ALTS}):
+                        alt = img.get("alt", "")
+                        if alt == "Yellow card":
+                            group_cards[team]["yc"] += 1
+                        elif alt in ("Red card", "Yellow-red card"):
+                            group_cards[team]["rc"] += 1
+
+            all_cards.update(group_cards)
+            played_teams = {t: c for t, c in group_cards.items() if c["yc"] > 0 or c["rc"] > 0}
+            if played_teams:
+                for team, c in played_teams.items():
+                    print(f"   Group {group} | {team}: 🟨{c['yc']} 🟥{c['rc']}")
+            else:
+                print(f"   Group {group}: no cards yet")
+
+            time.sleep(0.4)  # polite delay between Wikipedia requests
+
+        except Exception as e:
+            print(f"   Group {group}: ERROR — {e}")
+
+    return all_cards
+
+
+# ─────────────────────────────────────────────────────────────
+# STEP 3: COMPUTE NATION SCORES
+# Merge match data (football-data.org) + cards (Wikipedia)
+# ─────────────────────────────────────────────────────────────
+def compute_nation_scores(matches, card_data):
+    print("\n⚽ Step 3: Computing nation fantasy scores…")
+
+    all_picked = set(t for p in PLAYERS for t in p["picks"])
     scores = {}
     for team in all_picked:
         scores[team] = {
             "score": 0.0, "goals": 0, "cs": 0, "gd": 0,
-            "wins": 0, "draws": 0, "losses": 0,
-            "yc": 0, "rc": 0, "stage": "GS"
+            "wins": 0, "draws": 0, "losses": 0, "yc": 0, "rc": 0, "stage": "GS"
         }
 
     finished = [m for m in matches if m["status"] == "FINISHED"]
@@ -170,26 +285,17 @@ def compute_nation_scores(matches):
         away = norm(m["awayTeam"]["name"])
         hg   = m["score"]["fullTime"]["home"] or 0
         ag   = m["score"]["fullTime"]["away"] or 0
-
         h_in = home in scores
         a_in = away in scores
-
         if not h_in and not a_in:
-            continue  # neither team picked by anyone
+            continue
 
-        # Goals
         if h_in: scores[home]["goals"] += hg
         if a_in: scores[away]["goals"] += ag
-
-        # Clean sheets
         if h_in and ag == 0: scores[home]["cs"] += 1
         if a_in and hg == 0: scores[away]["cs"] += 1
-
-        # Goal difference
         if h_in: scores[home]["gd"] += (hg - ag)
         if a_in: scores[away]["gd"] += (ag - hg)
-
-        # Win / Draw / Loss
         if hg > ag:
             if h_in: scores[home]["wins"]   += 1
             if a_in: scores[away]["losses"] += 1
@@ -200,32 +306,36 @@ def compute_nation_scores(matches):
             if h_in: scores[home]["draws"] += 1
             if a_in: scores[away]["draws"] += 1
 
-        # Cards
-        for booking in m.get("bookings", []):
-            team = norm(booking.get("team", {}).get("name", ""))
-            if team not in scores:
-                continue
-            card = booking.get("card", "")
-            if card == "YELLOW_CARD":
-                scores[team]["yc"] += 1
-            elif card in ("RED_CARD", "YELLOW_RED_CARD"):
-                scores[team]["rc"] += 1
+    # ── Merge Wikipedia card data ──
+    card_teams_merged = 0
+    for team, cards in card_data.items():
+        if team in scores:
+            scores[team]["yc"] = cards["yc"]
+            scores[team]["rc"] = cards["rc"]
+            card_teams_merged += 1
+    print(f"   → Cards merged for {card_teams_merged} teams")
 
     # ── Compute fantasy points ──
     for team, s in scores.items():
-        pts  = s["goals"] * 1.5          # goals
-        pts += s["cs"]    * 2.0          # clean sheets
-        pts += s["wins"]  * 2.0          # wins
-        pts += max(0, s["gd"]) * 0.5     # positive goal difference only
-        pts -= s["yc"]    * 0.5          # yellow cards
-        pts -= s["rc"]    * 2.0          # red cards
+        pts  = s["goals"] * 1.5
+        pts += s["cs"]    * 2.0
+        pts += s["wins"]  * 2.0
+        pts += max(0, s["gd"]) * 0.5
+        pts -= s["yc"]    * 0.5
+        pts -= s["rc"]    * 2.0
         s["score"] = round(pts, 1)
+
+    # Print top 5
+    top5 = sorted(scores.items(), key=lambda x: x[1]["score"], reverse=True)[:5]
+    print("\n   Top 5 nations:")
+    for name, s in top5:
+        print(f"   {name}: {s['score']} pts  ({s['goals']}G · {s['cs']}CS · {s['wins']}W · 🟨{s['yc']} 🟥{s['rc']})")
 
     return scores
 
 
 # ─────────────────────────────────────────────────────────────
-# COMPUTE PLAYER SCORES
+# STEP 4: COMPUTE PLAYER SCORES
 # ─────────────────────────────────────────────────────────────
 def compute_player_scores(nation_scores):
     results = []
@@ -237,47 +347,37 @@ def compute_player_scores(nation_scores):
             s  = ns.get("score", 0.0)
             total += s
             breakdown[f"P{i+1} · {pick}"] = s
-        results.append({
-            **p,
-            "total":     round(total, 1),
-            "breakdown": breakdown
-        })
+        results.append({**p, "total": round(total, 1), "breakdown": breakdown})
     return results
 
 
 # ─────────────────────────────────────────────────────────────
-# FORMAT FIXTURES FOR THE DASHBOARD
+# STEP 5: FORMAT FIXTURES
 # ─────────────────────────────────────────────────────────────
 def format_fixtures(matches):
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     out = []
     for m in matches:
-        home_score = m["score"]["fullTime"]["home"]
-        away_score = m["score"]["fullTime"]["away"]
-        played     = m["status"] == "FINISHED"
-        is_live    = m["status"] in ("IN_PLAY", "PAUSED")
-
-        # Parse date string "2026-06-11" → "11 Jun"
+        status  = m["status"]
+        played  = status == "FINISHED"
+        is_live = status in ("IN_PLAY","PAUSED")
+        hg = m["score"]["fullTime"]["home"]
+        ag = m["score"]["fullTime"]["away"]
         date_str = m.get("utcDate","")[:10]
         try:
             from datetime import date
             d = date.fromisoformat(date_str)
-            months = ["Jan","Feb","Mar","Apr","May","Jun",
-                      "Jul","Aug","Sep","Oct","Nov","Dec"]
             date_label = f"{d.day} {months[d.month-1]}"
         except:
             date_label = date_str
-
+        grp = (m.get("group") or "?").replace("GROUP_","")
         out.append({
-            "date":       date_label,
-            "group":      (m.get("group") or "?").replace("GROUP_",""),
-            "home":       norm(m["homeTeam"]["name"]),
-            "away":       norm(m["awayTeam"]["name"]),
-            "homeScore":  home_score,
-            "awayScore":  away_score,
-            "venue":      m.get("venue",""),
-            "played":     played,
-            "live":       is_live,
-            "notable":    ""
+            "date":date_label, "group":grp,
+            "home":norm(m["homeTeam"]["name"]),
+            "away":norm(m["awayTeam"]["name"]),
+            "homeScore":hg, "awayScore":ag,
+            "venue":m.get("venue","") or "",
+            "played":played, "live":is_live, "notable":""
         })
     return out
 
@@ -286,56 +386,43 @@ def format_fixtures(matches):
 # MAIN
 # ─────────────────────────────────────────────────────────────
 def main():
-    print("=" * 50)
-    print("WC 2026 Fantasy Pool — Score Fetcher")
-    print("=" * 50)
+    print("=" * 55)
+    print("  WC 2026 Fantasy Pool — Score Fetcher")
+    print("  Scores: football-data.org | Cards: Wikipedia")
+    print("=" * 55)
 
-    # 1. Fetch
-    matches = fetch_matches()
-
-    # 2. Compute nation scores
-    print("\nComputing nation scores…")
-    nation_scores = compute_nation_scores(matches)
-    top5 = sorted(nation_scores.items(), key=lambda x: x[1]["score"], reverse=True)[:5]
-    print("  Top 5 nations:")
-    for name, s in top5:
-        print(f"    {name}: {s['score']} pts ({s['goals']}G, {s['cs']}CS, {s['wins']}W)")
-
-    # 3. Compute player scores
-    print("\nComputing player scores…")
+    matches       = fetch_matches()
+    card_data     = scrape_all_cards()
+    nation_scores = compute_nation_scores(matches, card_data)
     player_scores = compute_player_scores(nation_scores)
-    humans = [p for p in player_scores if not p.get("ai")]
-    humans_sorted = sorted(humans, key=lambda x: x["total"], reverse=True)
-    print("  Top 5 players:")
-    for p in humans_sorted[:5]:
-        print(f"    {p['name']}: {p['total']} pts")
+    fixtures      = format_fixtures(matches)
 
-    # 4. Format fixtures
-    fixtures = format_fixtures(matches)
-
-    # 5. Build output
-    live_count     = sum(1 for m in matches if m["status"] in ("IN_PLAY","PAUSED"))
     finished_count = sum(1 for m in matches if m["status"] == "FINISHED")
-    now_str        = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+    live_count     = sum(1 for m in matches if m["status"] in ("IN_PLAY","PAUSED"))
 
+    humans = sorted([p for p in player_scores if not p.get("ai")], key=lambda x: x["total"], reverse=True)
+    print("\n🏅 Top 5 players:")
+    for p in humans[:5]:
+        print(f"   {p['name']}: {p['total']} pts")
+
+    now_str = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     output = {
         "updated_at":     now_str,
         "matches_played": finished_count,
         "matches_live":   live_count,
         "matches_total":  len(matches),
+        "data_sources":   "Scores: football-data.org | Cards: Wikipedia (scraped)",
         "nation_scores":  nation_scores,
         "player_scores":  player_scores,
         "fixtures":       fixtures,
     }
-
-    # 6. Write JSON
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f"\n✅ Done! Written to {OUTPUT_FILE}")
     print(f"   {finished_count}/{len(matches)} matches · {live_count} live")
-    print(f"   Now open wc2026_dashboard.html in your browser")
-    print("=" * 50)
+    print(f"   Open wc2026_dashboard.html in your browser")
+    print("=" * 55)
 
 
 if __name__ == "__main__":
