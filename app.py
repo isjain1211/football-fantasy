@@ -443,6 +443,7 @@ NAME_MAP = {
     "United States":"USA","Korea Republic":"South Korea",
     "Côte d'Ivoire":"Ivory Coast","Cote d'Ivoire":"Ivory Coast",
     "Bosnia and Herzegovina":"Bosnia & Herz.",
+    "Bosnia-Herzegovina":         "Bosnia & Herz.",
     "Curaçao":"Curaçao","Curacao":"Curaçao",
     "Czech Republic":"Czechia","Turkey":"Türkiye",
     "Congo DR":"DR Congo","Democratic Republic of Congo":"DR Congo",
@@ -560,9 +561,13 @@ def fetch_data():
     except Exception as e:
         return None, str(e)
 
-    all_picked = set(t for p in PLAYERS for t in p["picks"])
+    # Initialise ALL 48 nations (not just picked ones) so every team
+    # shows correct stats in the Nation Scores tab
+    all_nations = set(t for teams in GROUPS.values() for t in teams)
+    all_picked  = set(t for p in PLAYERS for t in p["picks"])
+    all_teams   = all_nations | all_picked
     scores = {t: {"score":0.0,"goals":0,"cs":0,"gd":0,"wins":0,"draws":0,"losses":0,"yc":0,"rc":0}
-              for t in all_picked}
+              for t in all_teams}
 
     finished = [m for m in matches if m["status"] == "FINISHED"]
     live      = [m for m in matches if m["status"] in ("IN_PLAY","PAUSED")]

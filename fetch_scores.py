@@ -131,6 +131,7 @@ NAME_MAP = {
     "Côte d'Ivoire":              "Ivory Coast",
     "Cote d'Ivoire":              "Ivory Coast",
     "Bosnia and Herzegovina":     "Bosnia & Herz.",
+    "Bosnia-Herzegovina":         "Bosnia & Herz.",
     "Bosnia":                     "Bosnia & Herz.",
     "Curaçao":                    "Curaçao",
     "Curacao":                    "Curaçao",
@@ -271,9 +272,12 @@ def scrape_all_cards():
 def compute_nation_scores(matches, card_data):
     print("\n⚽ Step 3: Computing nation fantasy scores…")
 
-    all_picked = set(t for p in PLAYERS for t in p["picks"])
+    # Initialise ALL 48 nations so unpicked teams (e.g. Haiti) still show stats
+    all_nations = set(t for teams in GROUPS.values() for t in teams)
+    all_picked  = set(t for p in PLAYERS for t in p["picks"])
+    all_teams   = all_nations | all_picked
     scores = {}
-    for team in all_picked:
+    for team in all_teams:
         scores[team] = {
             "score": 0.0, "goals": 0, "cs": 0, "gd": 0,
             "wins": 0, "draws": 0, "losses": 0, "yc": 0, "rc": 0, "stage": "GS"
@@ -292,7 +296,6 @@ def compute_nation_scores(matches, card_data):
             continue
 
         if h_in: scores[home]["goals"] += hg
-    
         if a_in: scores[away]["goals"] += ag
         if h_in and ag == 0: scores[home]["cs"] += 1
         if a_in and hg == 0: scores[away]["cs"] += 1
