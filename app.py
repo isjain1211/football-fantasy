@@ -12,6 +12,41 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, date as dt_date
 from collections import defaultdict
+import logging
+import traceback
+
+# ── Logging — writes to wc2026.log file + console simultaneously ──
+import os
+
+LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wc2026.log")
+
+log = logging.getLogger("wc2026")
+log.setLevel(logging.INFO)
+
+# Avoid adding duplicate handlers on Streamlit hot-reloads
+if not log.handlers:
+    formatter = logging.Formatter(
+        fmt="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    # File handler — rotating: max 5MB, keep 3 backups → wc2026.log, wc2026.log.1, .2
+    from logging.handlers import RotatingFileHandler
+    file_handler = RotatingFileHandler(
+        LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+    )
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+
+    # Console handler — still visible in terminal / Streamlit Cloud log panel
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    log.addHandler(file_handler)
+    log.addHandler(console_handler)
+
+log.info(f"Logger initialised — writing to {LOG_FILE}")
 
 # ─────────────────────────────────────────────────────────────
 # PAGE CONFIG — must be first Streamlit call
@@ -284,9 +319,31 @@ section[data-testid="stSidebar"] { display: none; }
 .fx-status { color: var(--grey); font-weight: 600; }
 .fx-notable { font-size: 9px; color: var(--coral); margin-top: 3px; font-weight: 500; }
 
+/* Match detail summary (scorers + cards) */
+.fx-detail {
+  margin-top: 7px; padding-top: 6px;
+  border-top: 1px solid rgba(224,219,212,.55);
+  font-size: 10px; color: var(--grey); line-height: 1.7;
+}
+.fx-detail-row {
+  display: flex; gap: 5px; align-items: flex-start; margin-top: 2px;
+}
+.fx-detail-icon { flex-shrink: 0; width: 16px; }
+.fx-detail-text { flex: 1; }
+.fx-detail-text b { color: var(--sb); font-weight: 600; }
+.fx-goals-sep { color: var(--e300); margin: 0 5px; }
+
 /* ── Filter buttons ── */
-.stRadio [data-testid="stRadio"] label { font-size: 12px !important; }
-.stSelectbox select { font-size: 12px !important; }
+.stRadio label { 
+    font-size: 12px !important; 
+    color: var(--sb) !important; 
+}
+.stRadio [data-testid="stMarkdownContainer"] p {
+    color: var(--sb) !important;
+}
+[data-baseweb="radio"] label span {
+    color: var(--sb) !important;
+}.stSelectbox select { font-size: 12px !important; }
 [data-testid="stHorizontalBlock"] { gap: 6px !important; }
 
 /* ── Breakdown expander ── */
@@ -490,58 +547,157 @@ def today_str():
 # ─────────────────────────────────────────────────────────────
 # DATA FETCH — cached 5 min
 # ─────────────────────────────────────────────────────────────
+def _parse_goal_events(td):
+    """Parse scorer + minute from fhgoal/fagoal td."""
+    goals = []
+    if not td: return goals
+    for li in td.find_all("li"):
+        a = li.find("a")
+        name = a.get_text(strip=True) if a else li.get_text(strip=True).split("'")[0].strip()
+        fb = li.find("span", {"class": "fb-goal"})
+        minute = ""
+        if fb:
+            for sp in fb.find_all("span"):
+                txt = sp.get_text(strip=True)
+                if "'" in txt:
+                    minute = txt; break
+        txt_full = li.get_text().lower()
+        suffix = " (OG)" if ("o.g." in txt_full or "own goal" in txt_full) else (" (pen)" if "pen" in txt_full else "")
+        if name:
+            goals.append(f"{name}{suffix} {minute}".strip())
+    return goals
+
+
+def _parse_card_players(td):
+    """Parse card events from a lineup-table cell.
+    Each player is a <tr>; card <img> sits in a <td> in that same row,
+    next to a <span> holding the minute."""
+    yc, rc = [], []
+    if not td:
+        return yc, rc
+    for img in td.find_all("img", {"alt": lambda a: a in CARD_ALTS}):
+        tr = img.find_parent("tr")
+        if not tr:
+            continue
+        a = tr.find("a")
+        name = a.get_text(strip=True) if a else tr.get_text(" ", strip=True)[:25]
+        # Minute is the first short span text containing "'"
+        minute = ""
+        for sp in tr.find_all("span"):
+            t = sp.get_text(strip=True)
+            if "'" in t and len(t) < 8:
+                minute = t
+                break
+        entry = f"{name} {minute}".strip()
+        alt = img.get("alt", "")
+        if alt == "Yellow card":
+            yc.append(entry)
+        elif alt in ("Red card", "Yellow-red card"):
+            rc.append(entry)
+    return yc, rc
+
 @st.cache_data(ttl=300)
-def scrape_cards():
-    """Scrape yellow/red card data from Wikipedia group pages. Cached 5 min."""
-    all_cards = {}
+def scrape_match_details():
+    """Scrape goals + cards from Wikipedia group pages.
+    Returns:
+      all_cards:     {team: {yc, rc}}        for scoring
+      match_details: {(home, away): {...}}   for fixture display
+    """
+    all_cards     = {}
+    match_details = {}
+
+    def _is_starting_xi(t):
+        """A real starting-XI table: 'Manager:' text, lots of rows,
+        and a first row shaped as home | spacer | away."""
+        if "Manager:" not in t.get_text():
+            return False
+        if len(t.find_all("tr")) <= 10:
+            return False
+        first_row = t.find("tr")
+        if not first_row:
+            return False
+        tds = first_row.find_all("td", recursive=False)
+        return len(tds) >= 3 and tds[1].get_text(strip=True) == ""
+
     for group, url in WIKI_GROUPS.items():
         try:
-            r = requests.get(url, headers=WIKI_UA, timeout=10)
+            log.info(f"Wikipedia scrape: Group {group} — {url}")
+            r = requests.get(url, headers=WIKI_UA, timeout=12)
             if r.status_code != 200:
+                log.warning(f"Group {group}: HTTP {r.status_code}")
                 continue
             soup = BeautifulSoup(r.text, "html.parser")
+
             boxes = soup.find_all("div", {"class": "footballbox"})
-            lineup_tables = [
-                t for t in soup.find_all("table")
-                if len(t.find_all("img", {"alt": lambda a: a in CARD_ALTS})) > 0
-                and "Manager:" in t.get_text()
-                and len(t.find_all("tr")) > 10
-            ]
-            for tbl in lineup_tables:
-                prev_box = None
-                for box in boxes:
-                    if box.sourceline < tbl.sourceline:
-                        prev_box = box
-                    else:
-                        break
-                if not prev_box:
+            played_boxes = []
+            for box in boxes:
+                score_th = box.find("th", {"class": "fscore"})
+                if not score_th:
                     continue
-                home_th = prev_box.find("th", {"class": "fhome"})
-                away_th = prev_box.find("th", {"class": "faway"})
+                if "–" in score_th.get_text(strip=True) and "Match" not in score_th.get_text(strip=True):
+                    played_boxes.append(box)
+
+            lineup_tables = [t for t in soup.find_all("table") if _is_starting_xi(t)]
+            log.info(f"  Group {group}: {len(played_boxes)} played, "
+                     f"{len(lineup_tables)} starting-XI tables")
+
+            for box in played_boxes:
+                home_th = box.find("th", {"class": "fhome"})
+                away_th = box.find("th", {"class": "faway"})
                 if not home_th or not away_th:
                     continue
-                home_a = home_th.find("a")
-                away_a = away_th.find("a")
+                home_a, away_a = home_th.find("a"), away_th.find("a")
                 home_name = norm(home_a.get_text(strip=True) if home_a else home_th.get_text(strip=True))
                 away_name = norm(away_a.get_text(strip=True) if away_a else away_th.get_text(strip=True))
-                first_row = tbl.find("tr")
-                if not first_row:
-                    continue
-                tds = first_row.find_all("td", recursive=False)
-                if len(tds) < 3:
-                    continue
-                for team, td in [(home_name, tds[0]), (away_name, tds[2])]:
-                    if team not in all_cards:
-                        all_cards[team] = {"yc": 0, "rc": 0}
-                    for img in td.find_all("img", {"alt": lambda a: a in CARD_ALTS}):
-                        alt = img.get("alt", "")
-                        if alt == "Yellow card":
-                            all_cards[team]["yc"] += 1
-                        elif alt in ("Red card", "Yellow-red card"):
-                            all_cards[team]["rc"] += 1
-        except Exception:
+
+                # Goals — unchanged
+                fgoals = box.find("tr", {"class": "fgoals"})
+                home_goals, away_goals = [], []
+                if fgoals:
+                    home_goals = _parse_goal_events(fgoals.find("td", {"class": "fhgoal"}))
+                    away_goals = _parse_goal_events(fgoals.find("td", {"class": "fagoal"}))
+
+                # Cards — pair this match to the next starting-XI table AFTER it in the DOM
+                home_yc, home_rc, away_yc, away_rc = [], [], [], []
+                box_line = box.sourceline or 0
+                tbl = next((t for t in lineup_tables
+                            if (t.sourceline or 0) > box_line), None)
+                if tbl:
+                    tds = tbl.find("tr").find_all("td", recursive=False)
+                    if len(tds) >= 3:
+                        home_yc, home_rc = _parse_card_players(tds[0])
+                        away_yc, away_rc = _parse_card_players(tds[2])
+
+                log.info(f"    {home_name} vs {away_name}")
+                log.info(f"      ⚽ {home_goals} | {away_goals}")
+                log.info(f"      🟨 H:{home_yc} | A:{away_yc}")
+                log.info(f"      🟥 H:{home_rc} | A:{away_rc}")
+
+                for team, yc_list, rc_list in [
+                    (home_name, home_yc, home_rc),
+                    (away_name, away_yc, away_rc),
+                ]:
+                    all_cards.setdefault(team, {"yc": 0, "rc": 0})
+                    all_cards[team]["yc"] += len(yc_list)
+                    all_cards[team]["rc"] += len(rc_list)
+
+                match_details[(home_name, away_name)] = {
+                    "home_goals": home_goals, "away_goals": away_goals,
+                    "home_yc": home_yc, "home_rc": home_rc,
+                    "away_yc": away_yc, "away_rc": away_rc,
+                }
+
+        except Exception as e:
+            log.error(f"Wikipedia scrape error (Group {group}): {e}")
+            log.error(traceback.format_exc())
             continue
-    return all_cards
+
+    log.info(f"scrape_match_details complete: {len(match_details)} matches, "
+             f"{len(all_cards)} teams with card data")
+    for team, c in sorted(all_cards.items()):
+        if c["yc"] > 0 or c["rc"] > 0:
+            log.info(f"  Cards: {team} — 🟨{c['yc']} 🟥{c['rc']}")
+    return all_cards, match_details
 
 
 @st.cache_data(ttl=300)
@@ -551,6 +707,7 @@ def fetch_data():
     except Exception:
         token = "715a8137efc14ac0b72173f9572bc5a9"
 
+    log.info("fetch_data() called — fetching from football-data.org")
     try:
         r = requests.get(
             "https://api.football-data.org/v4/competitions/WC/matches",
@@ -636,17 +793,24 @@ def fetch_data():
             "home":norm(m["homeTeam"]["name"]),
             "away":norm(m["awayTeam"]["name"]),
             "homeScore":hg,"awayScore":ag,
-            "venue":m.get("venue","") or "",
+            "venue":(m.get("venue","") or "").replace("<","").replace(">",""),
             "played":played,"live":is_live,
         })
 
     now = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
-    # Merge Wikipedia card data into nation scores
-    card_data = scrape_cards()
+    # Merge Wikipedia card + goal data
+    log.info("Calling scrape_match_details()...")
+    card_data, match_details = scrape_match_details()
+    log.info(f"Card data received for {len(card_data)} teams, {len(match_details)} matches")
+    merged = 0
     for team, cards in card_data.items():
         if team in scores:
             scores[team]["yc"] = cards.get("yc", 0)
             scores[team]["rc"] = cards.get("rc", 0)
+            merged += 1
+        else:
+            log.warning(f"Card team not in scores: '{team}'")
+    log.info(f"Cards merged into {merged} teams")
     # Recompute fantasy points with cards included
     for t, s in scores.items():
         pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
@@ -665,6 +829,7 @@ def fetch_data():
 
     return {
         "ns": scores, "ps": player_scores, "fx": fx_list,
+        "match_details": match_details,
         "played": len(finished), "live_count": len(live),
         "total": len(matches), "updated": now,
     }, None
@@ -740,6 +905,7 @@ if err:
 ns = DATA["ns"]
 ps = DATA["ps"]
 fx = DATA["fx"]
+md = DATA.get("match_details", {})
 humans = sorted([p for p in ps if not p.get("ai")], key=lambda x: x["total"], reverse=True)
 ais    = sorted([p for p in ps if p.get("ai")],     key=lambda x: x["total"], reverse=True)
 
@@ -929,6 +1095,38 @@ with tab3:
             else:
                 score_html = '<div class="fx-score tbd">vs</div>'
                 status = "Upcoming"
+            # Build match detail block from Wikipedia data
+            # detail_html reset every iteration so it never leaks between cards
+            detail_html = ""
+            if m["played"]:
+                det = md.get((m["home"], m["away"]), {})
+                if det:
+                    hg_str = ", ".join(det.get("home_goals", [])) or "—"
+                    ag_str = ", ".join(det.get("away_goals", [])) or "—"
+                    # Cards: label each player with their team abbreviation
+                    yc_parts = []
+                    for p in det.get("home_yc", []): yc_parts.append(f"{p} ({m['home'][:3]})")
+                    for p in det.get("away_yc", []): yc_parts.append(f"{p} ({m['away'][:3]})")
+                    rc_parts = []
+                    for p in det.get("home_rc", []): rc_parts.append(f"{p} ({m['home'][:3]})")
+                    for p in det.get("away_rc", []): rc_parts.append(f"{p} ({m['away'][:3]})")
+                    all_yc = " · ".join(yc_parts)
+                    all_rc = " · ".join(rc_parts)
+                    yc_row = f'<div class="fx-detail-row"><span class="fx-detail-icon">🟨</span><span class="fx-detail-text">{all_yc}</span></div>' if all_yc else ""
+                    rc_row = f'<div class="fx-detail-row"><span class="fx-detail-icon">🟥</span><span class="fx-detail-text">{all_rc}</span></div>' if all_rc else ""
+                    detail_html = (
+                        f'<div class="fx-detail">'
+                        f'<div class="fx-detail-row">'
+                        f'<span class="fx-detail-icon">⚽</span>'
+                        f'<span class="fx-detail-text">'
+                        f'<b>{m["home"]}:</b> {hg_str}'
+                        f'<span class="fx-goals-sep"> | </span>'
+                        f'<b>{m["away"]}:</b> {ag_str}'
+                        f'</span></div>'
+                        f'{yc_row}{rc_row}'
+                        f'</div>'
+                    )
+
             cards_html += f"""
             <div class="fx-card {cls}">
               <div class="fx-top">
@@ -941,9 +1139,10 @@ with tab3:
                 <div class="fx-team away">{m['away']} {flag(m['away'])}{"  ★" if aMy else ""}</div>
               </div>
               <div class="fx-bottom">
-                <span class="fx-venue">{m.get('venue','')}</span>
+                <span class="fx-venue">{(m.get('venue','') or '').replace('<','&lt;').replace('>','&gt;')}</span>
                 <span class="fx-status">{status}</span>
               </div>
+              {detail_html}
             </div>"""
         st.markdown(f'<div class="fx-day-label">{label}</div><div class="fx-grid">{cards_html}</div>',
                     unsafe_allow_html=True)
