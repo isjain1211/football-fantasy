@@ -14,10 +14,10 @@ from datetime import datetime, timezone, date as dt_date
 from collections import defaultdict
 import logging
 import traceback
-
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ── Logging — writes to wc2026.log file + console simultaneously ──
 import os
-
 LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wc2026.log")
 
 log = logging.getLogger("wc2026")
@@ -622,7 +622,7 @@ def scrape_match_details():
     for group, url in WIKI_GROUPS.items():
         try:
             log.info(f"Wikipedia scrape: Group {group} — {url}")
-            r = requests.get(url, headers=WIKI_UA, timeout=12)
+            r = requests.get(url, headers=WIKI_UA, timeout=12,verify=False)
             if r.status_code != 200:
                 log.warning(f"Group {group}: HTTP {r.status_code}")
                 continue
@@ -701,6 +701,137 @@ def scrape_match_details():
 
 
 @st.cache_data(ttl=300)
+def scrape_qualified_teams():
+    """Scrape qualified/advanced teams from Wikipedia knockout stage page.
+    Returns {team_name: stage} where stage is one of:
+      'LAST_32', 'LAST_16', 'QUARTER_FINALS', 'SEMI_FINALS', 'FINAL', 'CHAMPION'
+    """
+    STAGE_BONUS = {
+        "LAST_32":       2.5,
+        "LAST_16":       5.0,
+        "QUARTER_FINALS":7.5,
+        "SEMI_FINALS":  10.0,
+        "FINAL":        15.0,
+        "CHAMPION":     25.0,
+    }
+    url = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_knockout_stage"
+    qualified = {}  # {team: highest_stage}
+
+    try:
+        r = requests.get(url, headers=WIKI_UA, timeout=12, verify=False)
+        if r.status_code != 200:
+            log.warning(f"KO page HTTP {r.status_code}")
+            return qualified, STAGE_BONUS
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # ── 1. Qualified teams table (who made R32) ──────────────────
+        qt = soup.find(id="Qualified_teams")
+        if qt:
+            tbl = qt.parent.find_next_sibling("table", {"class": "wikitable"})
+            if tbl:
+                for row in tbl.find_all("tr")[1:]:
+                    cells = row.find_all(["td", "th"])
+                    if len(cells) < 2:
+                        continue
+                    for cell in cells[1:]:  # skip group column
+                        for a in cell.find_all("a"):
+                            team = norm(a.get_text(strip=True))
+                            if team and team not in qualified:
+                                qualified[team] = "LAST_32"
+
+        # ── 2. KO footballboxes — detect how far each team advanced ──
+        # Stage headers appear as h3 before each batch of footballboxes
+        STAGE_MAP = {
+            "round of 32": "LAST_32",
+            "round of 16": "LAST_16",
+            "last 32":     "LAST_32",
+            "last 16":     "LAST_16",
+            "quarter":     "QUARTER_FINALS",
+            "semi":        "SEMI_FINALS",
+            "final":       "FINAL",
+        }
+
+        current_stage = None
+        for node in soup.find_all(["div", "h2", "h3"]):
+            # Detect stage from heading
+            if node.name in ["h2", "h3"]:
+                txt = node.get_text(strip=True).lower()
+                for kw, stage in STAGE_MAP.items():
+                    if kw in txt:
+                        # "final" matches both "semi-final" and "final"; prioritise
+                        if kw == "final" and "semi" in txt:
+                            current_stage = "SEMI_FINALS"
+                        elif kw == "final" and "quarter" in txt:
+                            current_stage = "QUARTER_FINALS"
+                        else:
+                            current_stage = stage
+                        break
+                continue
+
+            if "footballbox" not in (node.get("class") or []):
+                continue
+            if not current_stage:
+                continue
+
+            # Find the score to check if match is played
+            score_th = node.find("th", {"class": "fscore"})
+            if not score_th:
+                continue
+            score_txt = score_th.get_text(strip=True)
+            if "–" not in score_txt:
+                continue  # not played yet
+
+            # Parse home/away
+            home_th = node.find("th", {"class": "fhome"})
+            away_th = node.find("th", {"class": "faway"})
+            if not home_th or not away_th:
+                continue
+            home_a = home_th.find("a")
+            away_a = away_th.find("a")
+            home = norm(home_a.get_text(strip=True) if home_a else home_th.get_text(strip=True))
+            away = norm(away_a.get_text(strip=True) if away_a else away_th.get_text(strip=True))
+
+            # Both teams reached this stage
+            for team in [home, away]:
+                existing = qualified.get(team)
+                stages_order = list(STAGE_BONUS.keys())
+                new_idx = stages_order.index(current_stage) if current_stage in stages_order else -1
+                old_idx = stages_order.index(existing) if existing in stages_order else -1
+                if new_idx > old_idx:
+                    qualified[team] = current_stage
+
+            # Winner advances further — parse score
+            try:
+                parts = score_txt.replace("\xa0","").split("–")
+                hg, ag = int(parts[0].strip()), int(parts[1].strip().split()[0])
+            except Exception:
+                continue
+
+            winner = home if hg > ag else (away if ag > hg else None)
+            if winner:
+                stages_order = list(STAGE_BONUS.keys())
+                idx = stages_order.index(current_stage)
+                # Champion = winner of Final
+                if current_stage == "FINAL":
+                    qualified[winner] = "CHAMPION"
+                elif idx + 1 < len(stages_order):
+                    next_stage = stages_order[idx + 1]
+                    old_idx = stages_order.index(qualified.get(winner, "LAST_32"))
+                    if stages_order.index(next_stage) > old_idx:
+                        qualified[winner] = next_stage
+
+        log.info(f"scrape_qualified_teams: {len(qualified)} teams qualified")
+        for team, stage in sorted(qualified.items()):
+            log.info(f"  {team}: {stage} (+{STAGE_BONUS[stage]} pts)")
+
+    except Exception as e:
+        log.error(f"scrape_qualified_teams error: {e}")
+        log.error(traceback.format_exc())
+
+    return qualified, STAGE_BONUS
+
+
+@st.cache_data(ttl=300)
 def fetch_data():
     try:
         token = st.secrets["FOOTBALL_API_TOKEN"]
@@ -711,7 +842,7 @@ def fetch_data():
     try:
         r = requests.get(
             "https://api.football-data.org/v4/competitions/WC/matches",
-            headers={"X-Auth-Token": token}, timeout=15
+            headers={"X-Auth-Token": token}, timeout=15,verify=False
         )
         r.raise_for_status()
         matches = r.json().get("matches", [])
@@ -811,11 +942,24 @@ def fetch_data():
         else:
             log.warning(f"Card team not in scores: '{team}'")
     log.info(f"Cards merged into {merged} teams")
+
+
+    # ── Knockout stage bonuses ──
+    log.info("Fetching knockout qualification bonuses...")
+    qualified_teams, stage_bonus = scrape_qualified_teams()
+    for team, stage in qualified_teams.items():
+        if team in scores:
+            scores[team]["stage"] = stage
+            scores[team]["stage_pts"] = stage_bonus[stage]
+        else:
+            log.warning(f"Qualified team not in scores: '{team}'")
+    log.info(f"KO bonuses applied to {len(qualified_teams)} teams")
     # Recompute fantasy points with cards included
     for t, s in scores.items():
-        pts  = s["goals"]*1.5 + s["cs"]*2.0 + s["wins"]*2.0
+        pts  = s["goals"] * 1.5 + s["cs"] * 2.0 + s["wins"] * 2.0
         pts += s["gd"] * 0.5
-        pts -= s["yc"]*0.5 + s["rc"]*2.0
+        pts -= s["yc"] * 0.5 + s["rc"] * 2.0
+        pts += s.get("stage_pts", 0.0)   # ← add this line
         s["score"] = round(pts, 1)
     # Recompute player scores with updated nation scores
     player_scores = []
