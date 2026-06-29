@@ -830,6 +830,54 @@ def scrape_qualified_teams():
 
     return qualified, STAGE_BONUS
 
+@st.cache_data(ttl=300)
+def fetch_fotmob_cards():
+    """Fetch yellow + red card totals per team from Fotmob.
+    Returns {team_name: {yc: int, rc: int}}
+    """
+    FOTMOB_NAME_MAP = {
+        "Korea Republic":    "South Korea",
+        "Curacao":           "Curaçao",
+        "Bosnia-Herzegovina":"Bosnia & Herz.",
+        "Cape Verde":        "Cape Verde",
+        "United States":     "USA",
+        "Côte d'Ivoire":     "Ivory Coast",
+        "Congo DR":          "DR Congo",
+        "Czech Republic":    "Czechia",
+        "Turkey":            "Türkiye",
+    }
+    def fnorm(n):
+        return FOTMOB_NAME_MAP.get(n, NAME_MAP.get(n, n))
+
+    H = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        "Accept": "application/json",
+        "Referer": "https://www.fotmob.com/",
+    }
+    BASE = "https://www.fotmob.com/api/data/leagueseasondeepstats?id=77&season=24254&type=teams&stat="
+    cards = {}
+
+    for stat, key in [("total_yel_card_team", "yc"), ("total_red_card_team", "rc")]:
+        try:
+            r = requests.get(BASE + stat, headers=H, timeout=12, verify=False)
+            if r.status_code != 200:
+                log.warning(f"Fotmob {stat}: HTTP {r.status_code}")
+                continue
+            for entry in r.json().get("statsData", []):
+                team = fnorm(entry.get("name", ""))
+                val  = entry.get("statValue", {}).get("value", 0) or 0
+                if team not in cards:
+                    cards[team] = {"yc": 0, "rc": 0}
+                cards[team][key] = int(val)
+            log.info(f"Fotmob {stat}: {len(cards)} teams loaded")
+        except Exception as e:
+            log.error(f"Fotmob fetch error ({stat}): {e}")
+
+    for team, c in sorted(cards.items()):
+        if c["yc"] > 0 or c["rc"] > 0:
+            log.info(f"  Fotmob cards: {team} — 🟨{c['yc']} 🟥{c['rc']}")
+    return cards
+
 
 @st.cache_data(ttl=300)
 def fetch_data():
@@ -932,25 +980,34 @@ def fetch_data():
     # Merge Wikipedia card + goal data
     log.info("Calling scrape_match_details()...")
     card_data, match_details = scrape_match_details()
-    log.info(f"Card data received for {len(card_data)} teams, {len(match_details)} matches")
-    merged = 0
-    for team, cards in card_data.items():
-        if team in scores:
-            scores[team]["yc"] = cards.get("yc", 0)
-            scores[team]["rc"] = cards.get("rc", 0)
-            merged += 1
-        else:
-            log.warning(f"Card team not in scores: '{team}'")
-    log.info(f"Cards merged into {merged} teams")
 
+    log.info("Fetching card totals from Fotmob...")
+    fotmob_cards = fetch_fotmob_cards()
+
+    merged = 0
+    for team in scores:
+        # Fotmob is source of truth for totals; fall back to Wikipedia if missing
+        src = fotmob_cards.get(team) or card_data.get(team)
+        if src:
+            scores[team]["yc"] = src.get("yc", 0)
+            scores[team]["rc"] = src.get("rc", 0)
+            merged += 1
+    log.info(f"Cards merged into {merged} teams")
 
     # ── Knockout stage bonuses ──
     log.info("Fetching knockout qualification bonuses...")
     qualified_teams, stage_bonus = scrape_qualified_teams()
+
+    STAGES_ORDER = ["LAST_32", "LAST_16", "QUARTER_FINALS", "SEMI_FINALS", "FINAL", "CHAMPION"]
     for team, stage in qualified_teams.items():
         if team in scores:
             scores[team]["stage"] = stage
-            scores[team]["stage_pts"] = stage_bonus[stage]
+            # Cumulative: add ALL bonuses up to and including current stage
+            total_ko_pts = sum(
+                stage_bonus[s] for s in STAGES_ORDER
+                if STAGES_ORDER.index(s) <= STAGES_ORDER.index(stage)
+            )
+            scores[team]["stage_pts"] = total_ko_pts
         else:
             log.warning(f"Qualified team not in scores: '{team}'")
     log.info(f"KO bonuses applied to {len(qualified_teams)} teams")
